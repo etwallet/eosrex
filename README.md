@@ -16,7 +16,7 @@ An open source dapp of rex
   2. 美术设计
   3. dapp 框架选型
   4. 开发
-  5.发布
+  5. 发布
 
 
 接入项目列表：
