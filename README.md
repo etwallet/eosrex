@@ -25,6 +25,7 @@ An open source dapp of rex
 
 接入项目列表：
 
-ET钱包
-虎符钱包
-PocketECO
+ET钱包<br>
+虎符钱包<br>
+PocketECO<br>
+ONE
