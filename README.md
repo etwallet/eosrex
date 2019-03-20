@@ -27,3 +27,4 @@ An open source dapp of rex
 
 ET钱包
 虎符钱包
+PocketECO
