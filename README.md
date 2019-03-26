@@ -3,7 +3,7 @@ An open source dapp of rex
 原型图：https://pro.modao.cc/app/wuCVWCSX3MnmEIuENmMm2hxIW8cShDp
 
 背景：
-  rex 开发已经完成 很开就要上线（具体进度：https://eosauthority.com/rex/） ,想必各个钱包将支持。
+  rex 开发已经完成 很快就要上线（具体进度：https://eosauthority.com/rex/） ,想必各个钱包将支持。
   
 目的：
   1. 我们希望做成一个dapp，可以无缝接入到所有钱包。
@@ -28,4 +28,5 @@ An open source dapp of rex
 ET钱包<br>
 虎符钱包<br>
 PocketECO<br>
-ONE
+ONEChain<br>
+块信<br>
