@@ -1,0 +1,43 @@
+{
+  "name": "ETRobot",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "antd-mobile": "^2.2.6",
+    "copy-to-clipboard": "^3.0.5",
+    "dva": "^2.4.0",
+    "dva-loading": "^2.0.5",
+    "events": "^3.0.0",
+    "intl": "^1.2.5",
+    "moment": "^2.24.0",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-intl": "^2.7.2",
+    "react-moment": "^0.8.4",
+    "react-native-keyboard-aware-scroll-view": "^0.8.0",
+    "react-scripts": "1.0.13",
+    "storejs": "^1.0.20"
+  },
+  "scripts": {
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.4",
+    "babel-plugin-dva-hmr": "^0.3.2",
+    "babel-plugin-import": "^1.2.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "less": "^2.7.3",
+    "less-loader": "^4.0.5",
+    "react-app-rewired": "^1.2.9"
+  },
+  "theme": {
+    "primary-color": "#1088ae"
+  }
+}

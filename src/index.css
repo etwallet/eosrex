@@ -1,0 +1,126 @@
+
+@font-face{
+  font-family: 'SourceHanSansCN-Light';
+  src:url('./fonts/SourceHanSansCN-Light.otf') format('otf')
+}
+body,p,span,div {
+  font-family: "SourceHanSansCN-Light";
+  display:"flex";
+  background-color: "#F8F8F8"
+}
+
+#root, body, html {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: "SourceHanSansCN-Light";
+  -webkit-text-size-adjust: none;
+  background-color: "#F8F8F8"
+}
+body :global(#root) {
+  width: 100%;
+  height: 100%;
+}
+
+input:-ms-input-placeholder {
+  color: #D9D9D9;
+  opacity: 1;
+}
+input::-webkit-input-placeholder {
+  color: #D9D9D9;
+  opacity: 1;
+}
+
+
+/* 列表上下边框 */
+body :global(.am-list-body) {
+  position: relative;
+  background-color: #F8F8F8;
+  border: none;
+}
+
+body :global(.am-list-header) {
+  padding: 0
+}
+
+body :global(.am-modal-button-group-h .am-modal-button:first-child) {
+  color: #B5B5B5;
+}
+
+body :global(.am-navbar-left) {
+  padding-left: 0;
+}
+body :global(.am-navbar-light) {
+  color: #323232;
+}
+
+body :global(.am-popover .am-popover-item-container) {
+  justify-content: center;
+}
+
+
+/* 单行输入框 */
+body :global(.am-list-item:not(:last-child) .am-list-line) {
+  border: none;
+}
+
+/* 图片选择器 */
+body :global(.am-image-picker-list) {
+  padding: 10px 10px 1px;
+  margin: 0;
+} 
+
+body :global(.am-image-picker-list .am-flexbox .am-flexbox-item) {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+body :global(.am-image-picker-list .am-flexbox) {
+  margin-bottom: 10px;
+}
+body :global(.am-image-picker-list .am-image-picker-item .am-image-picker-item-remove) {
+  width: 20px;
+  height: 20px;
+  background-size: 20px auto;
+}
+
+
+
+/* 长输入框 */
+body :global(.am-textarea-has-count) {
+  min-height: 30px;
+  border: 1PX solid #D9D9D9;
+  background: #F8F8F8;
+  border-radius: 2px;
+  padding: 0;
+}
+body :global(.am-textarea-control) {
+  padding: 2px;
+}
+body :global(.am-textarea-control textarea) {
+  font-size: 14px;
+}
+/* 单选按钮 */
+body :global(.am-radio-item) {
+  min-height: 30px;
+  padding: 0;
+}
+body :global(.am-list .am-list-item.am-radio-item .am-list-line .am-list-extra .am-radio) {
+  height: 30px;
+}
+body :global(.am-list .am-list-item.am-radio-item .am-list-line .am-list-extra .am-radio-inner) {
+  top: 7.5px;
+}
+
+
+body :global(.am-list-item .am-input-label) {
+  margin-right: 15px;
+}
+body :global(.am-list-item .am-list-line .am-list-extra) {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+body :global(.am-list-item .am-list-line .am-list-content) {
+  color: #888888;
+  font-size: 15px;
+}
