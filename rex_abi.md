@@ -230,8 +230,11 @@ actions: [{
 ### 查看投票结果
 cleos  --wallet-url http://localhost:6666 --url http://localhost:8000 get table eosio eosio voters -L user11111111 -l 1
 
-### 购买REX: 价格: [total_rex*(total_lendable+amount)/total_lendable - total_rex] / amount
-### 租赁CPU: 价格:  [total_unlent*amount / (total_rent + amount)]/ amount
+### 购买REX: 价格: 
+[total_rex*(total_lendable+amount)/total_lendable - total_rex] / amount
+### 租赁CPU: 价格:  
+[total_unlent*amount / (total_rent + amount)]/ amount
+
 cleos  --wallet-url http://localhost:6666 --url http://localhost:8000 get table eosio eosio rexpool
 {
   "rows": [{
