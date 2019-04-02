@@ -1,5 +1,5 @@
-ABI接口
-#充值
+## ABI接口<br>
+### 充值
 cleos  --wallet-url http://localhost:6666 --url http://localhost:8000 push action eosio deposit '["user11111111","100000.0000 EOS"]' -p user11111111
 
 actions: [{
@@ -15,7 +15,7 @@ actions: [{
       },
     }]
 
-#提现
+### 提现
 cleos  --wallet-url http://localhost:6666 --url http://localhost:8000 push action eosio withdraw '["user22222222","50000.0000 EOS"]' -p user22222222
 
 actions: [{
@@ -31,7 +31,7 @@ actions: [{
       },
     }]
 
-#购买REX
+### 购买REX
 cleos  --wallet-url http://localhost:6666 --url http://localhost:8000 push action eosio buyrex '["user11111111","50000.0000 EOS"]' -p user11111111
 
 actions: [{
@@ -47,7 +47,7 @@ actions: [{
       },
     }]
 
-#使用抵押资源购买REX
+### 使用抵押资源购买REX
 cleos  --wallet-url http://localhost:6666 --url http://localhost:8000 push action eosio unstaketorex '["user22222222","user22222222","50.0000 EOS","50.0000 EOS"]' -p user22222222
 
 actions: [{
@@ -66,7 +66,7 @@ actions: [{
     }]
 
 
-#卖出REX
+### 卖出REX
 cleos  --wallet-url http://localhost:6666 --url http://localhost:8000 push action eosio sellrex '["user11111111","500000000.0000 REX"]' -p user11111111
 
 actions: [{
@@ -82,7 +82,7 @@ actions: [{
       },
     }]
 
-#取消订单
+### 取消订单
 cleos  --wallet-url http://localhost:6666 --url http://localhost:8000 push action eosio cnclrexorder '["user11111111"]' -p user11111111
 
 actions: [{
@@ -98,7 +98,7 @@ actions: [{
     }]
 
 
-#租赁CPU
+### 租赁CPU
 cleos  --wallet-url http://localhost:6666 --url http://localhost:8000 push action eosio rentcpu '["user22222222","user22222222","20.0000 EOS","0.0000 EOS"]' -p user22222222
 
 actions: [{
@@ -116,7 +116,7 @@ actions: [{
       },
     }]
 
-#租赁NET
+### 租赁NET
 cleos  --wallet-url http://localhost:6666 --url http://localhost:8000 push action eosio rentnet '["user22222222","user22222222","20.0000 EOS","0.0000 EOS"]' -p user22222222
 
 actions: [{
@@ -134,7 +134,7 @@ actions: [{
       },
     }]
 
-#存CPU贷款基金
+### 存CPU贷款基金
 cleos  --wallet-url http://localhost:6666 --url http://localhost:8000 push action eosio fundcpuloan '["user22222222", "1", "20.0000 EOS"]' -p user22222222
 
 actions: [{
@@ -150,7 +150,7 @@ actions: [{
         amount: '20.0000 EOS',
       },
     }]
-#存NET贷款基金
+### 存NET贷款基金
 cleos  --wallet-url http://localhost:6666 --url http://localhost:8000 push action eosio fundnetloan '["user22222222", "1", "20.0000 EOS"]' -p user22222222
 
 actions: [{
@@ -167,7 +167,7 @@ actions: [{
       },
     }]
 
-#取回CPU贷款基金
+### 取回CPU贷款基金
 cleos  --wallet-url http://localhost:6666 --url http://localhost:8000 push action eosio defcpuloan '["user22222222", "1", "20.0000 EOS"]' -p user22222222
 
 actions: [{
@@ -183,7 +183,7 @@ actions: [{
         amount: '20.0000 EOS',
       },
     }]
-#取回NET贷款基金
+### 取回NET贷款基金
 cleos  --wallet-url http://localhost:6666 --url http://localhost:8000 push action eosio defnetloan '["user22222222", "1", "20.0000 EOS"]' -p user22222222
 
 actions: [{
@@ -202,10 +202,10 @@ actions: [{
 
 
 
-#查看节点:
+### 查看节点:
 cleos  --wallet-url http://localhost:6666 --url http://localhost:8000 system listproducers
 
-#投票
+### 投票
 cleos  --wallet-url http://localhost:6666 --url http://localhost:8000 system  voteproducer prods user11111111 producer1111 producer1114 producer111f producer111h producer111p producer111w producer111b producer111c producer111d producer111e producer111g producer111j producer111k producer111l producer111q producer111r producer111z producer1113 producer111u producer111v producer111i
 
 actions: [{
@@ -227,11 +227,11 @@ actions: [{
     }]
 
 
-#查看投票结果
+### 查看投票结果
 cleos  --wallet-url http://localhost:6666 --url http://localhost:8000 get table eosio eosio voters -L user11111111 -l 1
 
-#购买REX: 价格: [total_rex*(total_lendable+amount)/total_lendable - total_rex] / amount
-#租赁CPU: 价格:  [total_unlent*amount / (total_rent + amount)]/ amount
+### 购买REX: 价格: [total_rex*(total_lendable+amount)/total_lendable - total_rex] / amount
+### 租赁CPU: 价格:  [total_unlent*amount / (total_rent + amount)]/ amount
 cleos  --wallet-url http://localhost:6666 --url http://localhost:8000 get table eosio eosio rexpool
 {
   "rows": [{
