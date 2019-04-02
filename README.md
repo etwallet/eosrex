@@ -1,6 +1,7 @@
 An open source dapp of rex 
 
-原型图：https://pro.modao.cc/app/wuCVWCSX3MnmEIuENmMm2hxIW8cShDp
+原型图：https://pro.modao.cc/app/wuCVWCSX3MnmEIuENmMm2hxIW8cShDp <br>
+ABI接口：https://github.com/eostoken/eosrex/blob/master/rex_api.md
 
 背景：
   rex 开发已经完成 很快就要上线（具体进度：https://eosauthority.com/rex/） ,想必各个钱包将支持。
