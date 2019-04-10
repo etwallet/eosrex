@@ -1,5 +1,5 @@
-import nodevote from './nodevote'
+import commonModel from './commonModel'
 const models = [
-    nodevote,
+    commonModel,
 ]
 export default models;

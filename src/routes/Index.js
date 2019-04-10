@@ -2,9 +2,11 @@ import React from 'react';
 import { Toast, PullToRefresh, ListView, Button, Carousel, Tabs, Badge, NavBar, ActivityIndicator, Progress, InputItem, List, WhiteSpace,Stepper} from 'antd-mobile';
 import { injectIntl } from 'react-intl';
 import { connect } from 'dva';
-import Auto from '../utils/Auto'
 import {routerRedux} from 'dva/router';
-import Constants from '../utils/Constants'
+import Auto from '../utils/Auto'
+import Utils from '../utils/Utils'
+import {formatEosQua} from '../utils/FormatUtil';
+
 require('moment/locale/zh-cn');
 var ScreenWidth = window.screen.width 
 var ScreenHeight = window.screen.height
@@ -18,12 +20,26 @@ class Index extends React.Component {
       cpuval: 1.6,
       netval: 1.6,
       timeval: 1.6,
-      
+      toAccount: this.props.account,
     };
   }
 
   componentDidMount() {
-   
+    document.addEventListener('scatterLoaded', scatterExtension => {
+      Utils.dispatchActiionData(this, { type: 'common/login', payload:{}});
+    });
+
+    setTimeout(()=>{
+      this.login();
+    }, 10);
+  }
+
+  async login() {
+    let accountInfo = await Utils.dispatchActiionData(this, { type: 'common/login', payload:{}});
+    if(!accountInfo){
+      return;
+    }
+    this.setState({toAccount: accountInfo.name});
   }
 
   onCpuChange = (cpuval) => {
@@ -49,6 +65,45 @@ class Index extends React.Component {
     this.props.dispatch(routerRedux.push({pathname: '/GameDescription', query: {   }}))
   }
  
+  doRent = () => {
+    if(!this.props.account){
+      Toast.info("请先登录", 1);
+      return;
+    }
+    let actions = [
+      {
+        account: 'eosio',
+        name: 'rentcpu',
+        authorization: [{
+          actor: this.props.account,
+          permission: this.props.permission,
+        }],
+        data: {
+          from: this.props.account,
+          receiver: this.props.toAccount,
+          loan_payment: formatEosQua(this.state.cpuval + ' EOS'),
+          loan_fund: '0.0000 EOS',
+        },
+      },
+      {
+        account: 'eosio',
+        name: 'rentnet',
+        authorization: [{
+          actor: this.props.account,
+          permission: this.props.permission,
+        }],
+        data: {
+          from: this.props.account,
+          receiver: this.props.toAccount,
+          loan_payment: formatEosQua(this.state.netval + ' EOS'),
+          loan_fund: '0.0000 EOS',
+        },
+      }
+    ];
+
+    Utils.dispatchActiionData(this, { type: 'common/sendEosAction', payload:{actions: actions}});
+  }
+
   render() {
     return (<div style={styles.rootDiv}>
       <div style={{background:'#FFFFFF', }}>
@@ -57,11 +112,11 @@ class Index extends React.Component {
           <Button type="ghost" onClick={this.onbuysell.bind(this)} style={styles.headtopbtn} activeStyle={{opacity: '0.5'}}>买卖</Button>
         </div>
         <div style={styles.headbottomout}>
-          <p style={styles.headbottomtext}>12324</p>
+          <p style={styles.headbottomtext}>{Utils.sliceEos(this.props.rexpool.totalUnLent)}</p>
           <Progress percent={40} position="normal" unfilled={true} style={styles.progress} barStyle={styles.barout}/>
           <div style={styles.rentout}>
-            <p style={styles.renttext}>已出租：40</p>
-            <p style={styles.renttext}>总量：284000</p>
+            <p style={styles.renttext}>已出租：{Utils.sliceEos(this.props.rexpool.totalLent)}</p>
+            <p style={styles.renttext}>总量：{Utils.sliceEos(this.props.rexpool.totalLendable)}</p>
           </div>
         </div>
       </div>
@@ -70,11 +125,14 @@ class Index extends React.Component {
       <div style={styles.centerDiv}>
         <div style={styles.centertop}>
           <p style={styles.centertoptitle}>租用资源</p>
-          <p style={styles.centertoptext}>我的余额：4000 EOS</p>
+          <p style={styles.centertoptext}>我的余额：{this.props.eosBalance} EOS</p>
         </div>
+        <p style={styles.centertoptitle}>付款账户：{this.props.account}</p>
         <List >
-          <InputItem defaultValue="heiqi1234512" placeholder="please input content" data-seed="logId">付款账户：</InputItem>
-          <InputItem clear placeholder="请输入接收账户" ref={el => this.autoFocusInst = el}>接收账户：</InputItem>
+          <InputItem   
+            value={this.state.toAccount}
+            onChange={(toAccount) => this.setState({ toAccount })}
+            ref={el => this.autoFocusInst = el}>接收账户：</InputItem>
         </List>
       </div>
       <WhiteSpace size="lg" />
@@ -103,14 +161,14 @@ class Index extends React.Component {
 
       <div style={styles.footDiv}>
         <p style={styles.description}>订单确认：</p>
-        <div style={styles.explaintext}>heiqi1234512为wddadddwd租赁抵押30天，花费1.6 EOS租赁CPU 27.96 EOS，花费1.5 EOS租赁NET 28.96 EOS。</div>
-        <Button type="ghost" style={styles.footbtn} activeStyle={{opacity: '0.5'}}>一键租赁</Button>
+        <div style={styles.explaintext}>{this.props.account}为{this.state.toAccount}租赁抵押30天，花费1.6 EOS租赁CPU 27.96 EOS，花费1.5 EOS租赁NET 28.96 EOS。</div>
+        <Button onClick={this.doRent} type="ghost" style={styles.footbtn} activeStyle={{opacity: '0.5'}}>一键租赁</Button>
       </div>
     </div>)
   }
 } 
 
-export default connect(({ }) => ({ }))(injectIntl(Index));
+export default connect(({common }) => ({...common }))(injectIntl(Index));
 
 const styles = { 
   rootDiv:{

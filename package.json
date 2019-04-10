@@ -11,6 +11,7 @@
     "intl": "^1.2.5",
     "moment": "^2.24.0",
     "react": "^15.6.1",
+    "react-dev-utils": "^8.0.0",
     "react-dom": "^15.6.1",
     "react-intl": "^2.7.2",
     "react-moment": "^0.8.4",

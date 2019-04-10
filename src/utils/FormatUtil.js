@@ -64,10 +64,10 @@ export const formatEosQua = (amount, precision = 4) =>{
   // if(e.length > 1 && e[1] == "QB"){
   //   return amount; // QB精度为1，这里不做精度转换
   // }
-  if(precision == 0){
+  if(precision === 0){
     return amount;
   }
-  r=e[0].split(".");
+  let r=e[0].split(".");
   if(r.length>1){
     if(r[1].length <= precision){
       var n=precision-r[1].length;
@@ -83,7 +83,7 @@ export const formatEosQua = (amount, precision = 4) =>{
     amount=amount+" "+e[1];
   }else{
     var zeroSection = '';
-    for(var i = 0; i < precision; i++){
+    for(var j = 0; j < precision; j++){
       zeroSection += '0'; 
     }
     amount=e[0]+"."+ zeroSection + " " + e[1];
