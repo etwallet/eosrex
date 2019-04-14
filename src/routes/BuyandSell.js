@@ -4,7 +4,7 @@ import { injectIntl } from 'react-intl';
 import { connect } from 'dva';
 import Auto from '../utils/Auto'
 import {routerRedux} from 'dva/router';
-import Constants from '../utils/Constants'
+import Utils from '../utils/Utils'
 require('moment/locale/zh-cn');
 var ScreenWidth = window.screen.width 
 var ScreenHeight = window.screen.height
@@ -23,7 +23,7 @@ class BuyandSell extends React.Component {
   }
 
   componentDidMount() {
-   
+    Utils.dispatchActiionData(this, { type: 'rex/getMyRexInfo', payload:{account: this.props.account}});
   }
 
   onlease = () => {
@@ -59,7 +59,7 @@ class BuyandSell extends React.Component {
           <Button type="ghost" onClick={this.onlease.bind(this)} style={styles.headtopbtn} activeStyle={{opacity: '0.5'}}>租赁</Button>
         </div>
         <div style={styles.headbottomout}>
-          <p style={styles.headbottomleft}>12324</p>
+          <p style={styles.headbottomleft}>{Utils.sliceUnit(this.props.rexpool.totalRex)}</p>
           <div style={styles.headbottomright}>
             <p style={styles.headbottomtext}>REX趋势</p>
             <img src={'../img/chevron.png'}  style={styles.headbottomimg} />
@@ -70,7 +70,7 @@ class BuyandSell extends React.Component {
 
       <div style={styles.centerDiv}>
         <div style={styles.centertopout}>
-          <p style={styles.centertoptext}>账户信息：heiqi1234512</p>
+          <p style={styles.centertoptext}>账户信息：{this.props.account}</p>
           <Button type="ghost"  style={styles.centertopbtn} onClick={_el => this.description()}
             activeStyle={{opacity: '0.5'}} icon={<img src={'../img/help.png'}  style={styles.reportimg} />} />
         </div>
@@ -81,7 +81,7 @@ class BuyandSell extends React.Component {
           </List.Item>
           <List.Item wrap >
           <span style={styles.centerbottom}>我的REX：</span>
-          <span style={styles.centerbottom}>40000 REX</span>
+          <span style={styles.centerbottom}>{this.props.myRexInfo.totalRex} REX</span>
           </List.Item>
         </List>
       </div>
@@ -135,7 +135,7 @@ class BuyandSell extends React.Component {
   }
 } 
 
-export default connect(({ }) => ({ }))(injectIntl(BuyandSell));
+export default connect(({ common, rex }) => ({ ...common, ...rex }))(injectIntl(BuyandSell));
 
 const styles = { 
   rootDiv:{

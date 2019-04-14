@@ -43,9 +43,10 @@ export default class  Utils {
         return await Utils.sendActionToModel(context,action); 
     }
 
-    static sliceEos(val){
+    static sliceUnit(val){
       try {
-        return val.replace("EOS", "").replace(" ", "");
+        var e = val.split(" ");
+        return e[0];
       } catch (error) {
         return '0.0000';
       }

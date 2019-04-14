@@ -112,11 +112,11 @@ class Index extends React.Component {
           <Button type="ghost" onClick={this.onbuysell.bind(this)} style={styles.headtopbtn} activeStyle={{opacity: '0.5'}}>买卖</Button>
         </div>
         <div style={styles.headbottomout}>
-          <p style={styles.headbottomtext}>{Utils.sliceEos(this.props.rexpool.totalUnLent)}</p>
+          <p style={styles.headbottomtext}>{Utils.sliceUnit(this.props.rexpool.totalUnLent)}</p>
           <Progress percent={40} position="normal" unfilled={true} style={styles.progress} barStyle={styles.barout}/>
           <div style={styles.rentout}>
-            <p style={styles.renttext}>已出租：{Utils.sliceEos(this.props.rexpool.totalLent)}</p>
-            <p style={styles.renttext}>总量：{Utils.sliceEos(this.props.rexpool.totalLendable)}</p>
+            <p style={styles.renttext}>已出租：{Utils.sliceUnit(this.props.rexpool.totalLent)}</p>
+            <p style={styles.renttext}>总量：{Utils.sliceUnit(this.props.rexpool.totalLendable)}</p>
           </div>
         </div>
       </div>
