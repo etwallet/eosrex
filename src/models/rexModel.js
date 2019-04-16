@@ -28,11 +28,10 @@ export default {
         obj.limit = 1;
         obj.lower_bound = payload.account;
         let info = yield eos.getTableRows(obj);
-        alert("=========="+JSON.stringify(info))
 
         let rexInfo = info.rows;
         let myTotalRex = 0;
-        rexInfo.array.forEach(item => {
+        rexInfo.forEach(item => {
           let v = 0;
           try {
             let s = Utils.sliceUnit(item.rex_balance);
@@ -43,7 +42,6 @@ export default {
           myTotalRex += v;
         });
 
-        alert(myTotalRex)
         rexInfo.totalRex = myTotalRex;
         yield put({ type: 'update', payload: {myRexInfo: rexInfo} });
       } catch (error) {

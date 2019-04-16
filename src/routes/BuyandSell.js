@@ -5,15 +5,18 @@ import { connect } from 'dva';
 import Auto from '../utils/Auto'
 import {routerRedux} from 'dva/router';
 import Utils from '../utils/Utils'
+import {formatEosQua} from '../utils/FormatUtil';
+
 require('moment/locale/zh-cn');
 var ScreenWidth = window.screen.width 
 var ScreenHeight = window.screen.height
 const alert = Modal.alert;
 
 var TransType = {
-  BUY : 0, 
-  SELL : 1, 
-}
+  BUY: 0, 
+  SELL: 1,
+};
+
 class BuyandSell extends React.Component {
   constructor(props) {
     super(props);
@@ -25,6 +28,15 @@ class BuyandSell extends React.Component {
       buysell: true,
       quantity: '0',
       transType: TransType.BUY,
+      actionsList: [
+        {actions: this.getBuyActions},
+        {actions: this.getSellActions},
+      ],
+      defaultProducers:[
+        "producer1111",
+        "producer1114",
+        "producer111f"
+      ]
     };
   }
 
@@ -42,9 +54,9 @@ class BuyandSell extends React.Component {
 
   onChange = (e) => {
     if(e.nativeEvent.value == this.state.values[1]){
-      this.setState({buysell: false})
+      this.setState({transType: TransType.SELL})
     }else{
-      this.setState({buysell: true})
+      this.setState({transType: TransType.SELL})
     }
   }
 
@@ -76,24 +88,107 @@ class BuyandSell extends React.Component {
     ])
   }
 
-  getVoteActions = () => {
+  getdefaultVoteActions = () => {
     let actions = [{
-
+      account: 'eosio',
+      name: 'voteproducer',
+      authorization: [{
+        actor: this.props.account,
+        permission: this.props.permission,
+      }],
+      data: {
+        voter: this.props.account,
+	      proxy: '',
+        producers: this.state.defaultProducers,
+      },
     }];
+
+    return actions;
+  }
+
+  /**
+   * 买rex
+   */
+  getBuyActions = () => {
+    let actions = [{
+        account: 'eosio',
+        name: 'deposit',
+        authorization: [{
+          actor: this.props.account,
+          permission: this.props.permission,
+        }],
+        data: {
+          owner: this.props.account,
+          amount: formatEosQua(this.state.quantity + ' EOS'),
+        },
+      },
+      {
+        account: 'eosio',
+        name: 'buyrex',
+        authorization: [{
+          actor: this.props.account,
+          permission: 'active',
+        }],
+        data: {
+          owner: this.props.account,
+          amount: formatEosQua(this.state.quantity + ' EOS'),
+        },
+      }
+    ]
+
+    return actions;
+  }
+
+  /**
+   * 卖rex
+   */
+  getSellActions = () => {
+      let actions = [{
+        account: 'eosio',
+        name: 'sellrex',
+        authorization: [{
+          actor: this.props.account,
+          permission: this.props.permission,
+        }],
+        data: {
+          from: this.props.account,
+          rex: formatEosQua(this.state.quantity + ' REX'),
+        },
+      },
+    ]
+
+    return actions;
+  }
+
+  /**
+   * 提币
+   */
+  getWithdrawActions = () =>{
+    let actions = [
+      {
+        account: 'eosio',
+        name: 'withdraw',
+        authorization: [{
+          actor: this.props.account,
+          permission: this.props.permission,
+        }],
+        data: {
+          owner: this.props.account,
+          amount: formatEosQua(this.state.quantity + ' EOS'),
+        },
+      }
+    ];
 
     return actions;
   }
 
   getRexTransActions = () => {
-    let actions = [{
-
-    }];
-
+    let actions = this.state.actionsList[this.state.transType].actions();
     return actions;
   }
 
   doVoteAndRexTrans = () => {
-    let voteActions = this.getVoteActions();
+    let voteActions = this.getdefaultVoteActions();
     let rexTransActions = this.getRexTransActions();
     let actions = voteActions.concat(rexTransActions);
     this.doEosTransact(actions);

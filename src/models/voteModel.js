@@ -24,9 +24,10 @@ export default {
         obj.json = true;
         obj.code = 'eosio';
         obj.scope = 'eosio';
-        obj.table = 'rexbal';
+        obj.table = 'voters';
         obj.limit = 1;
         obj.lower_bound = payload.account;
+        obj.table_key = 'owner';
         let info = yield eos.getTableRows(obj);
 
         let voteInfo = info.rows;

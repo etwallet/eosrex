@@ -22,8 +22,9 @@ export default {
       totalRent: '0.0000 EOS', // 总租金
       totalLendable: '0.0000', //总的EOS量
       totalRex: '0.0000 REX', // REX总量
-    }
-
+    },
+    isVoted: false,
+    myVotes: [],
   },
 
   effects: {
@@ -34,16 +35,28 @@ export default {
         if(window.scatter.identity && window.scatter.identity.accounts && window.scatter.identity.accounts.length>0){
           let account = window.scatter.identity.accounts[0];
           if(account.blockchain=="eos"){
+          // let account = {name: "user11111111"}
             let network = yield select(state => state.common.network)  
             var eos = window.scatter.eos(network, window.Eos);
             
-            let balanceArr = yield eos.getCurrencyBalance('eosio.token', account.name, 'EOS');
             let eosBalance = '0.0000';
-            if(balanceArr && (balanceArr.length > 0) && (balanceArr[0] != '')){
-              eosBalance = balanceArr[0].replace("EOS", "").replace(" ", "");
+            let accountInfo = yield eos.getAccount(account.name);
+            if(accountInfo && accountInfo.core_liquid_balance){
+              eosBalance = accountInfo.core_liquid_balance.replace("EOS", "").replace(" ", "");
             }
 
-            yield put({ type: 'update', payload: {account: account.name, permission: account.authority, eosBalance: eosBalance} });
+            let isVoted = false; // 是否已经投票过
+            let myVotes = [];
+            if(accountInfo && accountInfo.voter_info && accountInfo.voter_info.producers){
+              myVotes = accountInfo.voter_info.producers;
+              if(myVotes && myVotes.length > 0){
+                isVoted = true;
+              }
+            }
+
+            yield put({ type: 'update', payload: {account: account.name, permission: account.authority, eosBalance: eosBalance}});
+            yield put({ type: 'update', payload: {myVotes: myVotes, isVoted: isVoted}});
+
             yield put({ type: 'getRexInfo', payload: {}});
 
             if(callback) callback(account);
