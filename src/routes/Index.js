@@ -18,8 +18,8 @@ class Index extends React.Component {
     this.state = {
       dataSource,
       cpuval: 1.6,
-      netval: 1.6,
-      timeval: 1.6,
+      netval: 1.5,
+      timeval: 10,
       toAccount: this.props.account,
     };
   }
@@ -128,12 +128,10 @@ class Index extends React.Component {
           <p style={styles.centertoptext}>我的余额：{this.props.eosBalance} EOS</p>
         </div>
         <p style={styles.centertoptitle}>付款账户：{this.props.account}</p>
-        <List >
-          <InputItem   
-            value={this.state.toAccount}
-            onChange={(toAccount) => this.setState({ toAccount })}
-            ref={el => this.autoFocusInst = el}>接收账户：</InputItem>
-        </List>
+        <InputItem   
+          value={this.state.toAccount}
+          onChange={(toAccount) => this.setState({ toAccount })}
+          ref={el => this.autoFocusInst = el}>接收账户：</InputItem>
       </div>
       <WhiteSpace size="lg" />
 
@@ -153,8 +151,8 @@ class Index extends React.Component {
               min={0.1} step={0.1} value={this.state.netval} onChange={this.onNetChange}/>}
           >NET</List.Item>
           <List.Item wrap
-            extra={<Stepper style={{ width: '100%', minWidth: '100px' }} showNumber max={10}
-              min={0.1} step={0.1} value={this.state.timeval} onChange={this.onTimeChange}/>}
+            extra={<Stepper style={{ width: '100%', minWidth: '100px' }} showNumber max={30}
+              min={1} step={1} value={this.state.timeval} onChange={this.onTimeChange}/>}
           >租用时长(天)</List.Item>
         </List>
       </div>
@@ -257,8 +255,8 @@ const styles = {
   },
   centertoptitle: {
     color: '#000000', 
-    fontSize: Auto.WHT(34), 
-    lineHeight: Auto.WHT(42), 
+    fontSize: Auto.WHT(35), 
+    lineHeight: Auto.WHT(84), 
     paddingLeft: Auto.WHT(30),
   },
   centertoptext: {
