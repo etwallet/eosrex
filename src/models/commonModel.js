@@ -35,27 +35,11 @@ export default {
         if(window.scatter.identity && window.scatter.identity.accounts && window.scatter.identity.accounts.length>0){
           let account = window.scatter.identity.accounts[0];
           if(account.blockchain=="eos"){
-          // let account = {name: "user11111111"}
-            let network = yield select(state => state.common.network)  
-            var eos = window.scatter.eos(network, window.Eos);
-            
-            let eosBalance = '0.0000';
-            let accountInfo = yield eos.getAccount(account.name);
-            if(accountInfo && accountInfo.core_liquid_balance){
-              eosBalance = accountInfo.core_liquid_balance.replace("EOS", "").replace(" ", "");
-            }
 
-            let isVoted = false; // 是否已经投票过
-            let myVotes = [];
-            if(accountInfo && accountInfo.voter_info && accountInfo.voter_info.producers){
-              myVotes = accountInfo.voter_info.producers;
-              if(myVotes && myVotes.length > 0){
-                isVoted = true;
-              }
-            }
 
-            yield put({ type: 'update', payload: {account: account.name, permission: account.authority, eosBalance: eosBalance}});
-            yield put({ type: 'update', payload: {myVotes: myVotes, isVoted: isVoted}});
+            yield put({ type: 'update', payload: {account: account.name, permission: account.authority}});
+
+            yield put({ type: 'getAccountInfo', payload: {account: account.name}});
 
             yield put({ type: 'getRexInfo', payload: {}});
 
@@ -67,6 +51,34 @@ export default {
       } catch (error) {
         // Toast.info("登录失败，请重新登录", 1);
         console.log("+++++app/models/commonModel.js++++login:",JSON.stringify(error));
+      }
+    },
+
+    // 获取账户信息
+    *getAccountInfo({ payload, callback }, { select,  call, put }) {
+      try {
+        let network = yield select(state => state.common.network)  
+        var eos = window.scatter.eos(network, window.Eos);
+        
+        let eosBalance = '0.0000';
+        let accountInfo = yield eos.getAccount(payload.account);
+        if(accountInfo && accountInfo.core_liquid_balance){
+          eosBalance = accountInfo.core_liquid_balance.replace("EOS", "").replace(" ", "");
+        }
+
+        let isVoted = false; // 是否已经投票过
+        let myVotes = [];
+        if(accountInfo && accountInfo.voter_info && accountInfo.voter_info.producers){
+          myVotes = accountInfo.voter_info.producers;
+          if(myVotes && myVotes.length >= 21){
+            isVoted = true;
+          }
+        }
+
+        yield put({ type: 'update', payload: {myVotes: myVotes, isVoted: isVoted, eosBalance: eosBalance}});
+
+      } catch (error) {
+        console.log("+++++app/models/commonModel.js++++getAccountInfo-error:",JSON.stringify(error));
       }
     },
 
@@ -98,6 +110,8 @@ export default {
         var eos = window.scatter.eos(network, window.Eos);
         let resp = yield eos.transaction({actions: payload.actions});
         if(resp.transaction_id){
+          let account = yield select(state => state.common.account);  
+          yield put({ type: 'getAccountInfo', payload: {account: account}});
           yield put({ type: 'getRexInfo', payload: {}});
         }
         if(callback) callback(resp);

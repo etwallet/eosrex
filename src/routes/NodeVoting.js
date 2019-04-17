@@ -5,7 +5,7 @@ import { injectIntl } from 'react-intl';
 import moment from "moment";
 import PropTypes from 'prop-types';
 import Auto from '../utils/Auto'
-import Constants from '../utils/Constants'
+import Utils from '../utils/Utils'
 import { Toast, PullToRefresh, ListView, Button, WhiteSpace, List, Modal, Checkbox} from 'antd-mobile';
 var ScreenWidth = document.documentElement.clientWidth;
 var ScreenHeight = document.documentElement.clientHeight;
@@ -19,48 +19,98 @@ class NodeVoting extends Component{
         this.state = {
             dataSource,
             selected: 0,
-            data: [
-                {icon: '../img/help.png', name: 'EOSBIXIN0', region: 'eosbixinboot', ischeck: false, },
-                {icon: '../img/help.png', name: 'EOSBIXIN1', region: 'eosbixinboot', ischeck: false, },
-                {icon: '../img/help.png', name: 'EOSBIXIN2', region: 'eosbixinboot', ischeck: false, },
-                {icon: '../img/help.png', name: 'EOSBIXIN3', region: 'eosbixinboot', ischeck: false, },
-                {icon: '../img/help.png', name: 'EOSBIXIN4', region: 'eosbixinboot', ischeck: false, },
-                {icon: '../img/help.png', name: 'EOSBIXIN5', region: 'eosbixinboot', ischeck: false, },
-                {icon: '../img/help.png', name: 'EOSBIXIN6', region: 'eosbixinboot', ischeck: false, },
-                {icon: '../img/help.png', name: 'EOSBIXIN7', region: 'eosbixinboot', ischeck: false, },
-                {icon: '../img/help.png', name: 'EOSBIXIN8', region: 'eosbixinboot', ischeck: false, },
-                {icon: '../img/help.png', name: 'EOSBIXIN9', region: 'eosbixinboot', ischeck: false, },
-                {icon: '../img/help.png', name: 'EOSBIXIN10', region: 'eosbixinboot', ischeck: false, },
-                {icon: '../img/help.png', name: 'EOSBIXIN11', region: 'eosbixinboot', ischeck: false, },
-                {icon: '../img/help.png', name: 'EOSBIXIN12', region: 'eosbixinboot', ischeck: false, },
-                {icon: '../img/help.png', name: 'EOSBIXIN13', region: 'eosbixinboot', ischeck: false, },
-                {icon: '../img/help.png', name: 'EOSBIXIN14', region: 'eosbixinboot', ischeck: false, },
-                {icon: '../img/help.png', name: 'EOSBIXIN15', region: 'eosbixinboot', ischeck: false, },
-                {icon: '../img/help.png', name: 'EOSBIXIN16', region: 'eosbixinboot', ischeck: false, },
-                {icon: '../img/help.png', name: 'EOSBIXIN17', region: 'eosbixinboot', ischeck: false, },
-                {icon: '../img/help.png', name: 'EOSBIXIN18', region: 'eosbixinboot', ischeck: false, },
-                {icon: '../img/help.png', name: 'EOSBIXIN19', region: 'eosbixinboot', ischeck: false, },
-                {icon: '../img/help.png', name: 'EOSBIXIN20', region: 'eosbixinboot', ischeck: false, },
-                {icon: '../img/help.png', name: 'EOSBIXIN21', region: 'eosbixinboot', ischeck: false, },
-                {icon: '../img/help.png', name: 'EOSBIXIN22', region: 'eosbixinboot', ischeck: false, },
-                {icon: '../img/help.png', name: 'EOSBIXIN23', region: 'eosbixinboot', ischeck: false, },
-
-            ]
+            producers: []
         }
     }
 
     componentDidMount() {
-        
+        this.onRefresh();
     }
 
     onRefresh() {
-
+        this.getVoteInfo();
     }
 
     onEndReached() {
 
     }
 
+    async getVoteInfo(){
+        let producers = await Utils.dispatchActiionData(this, { type: 'vote/listProducers', payload:{}});
+        let selected = 0;
+        producers.forEach((item) => {
+            if(item.isSelect){
+                selected++;  
+            }
+        })
+        this.setState({producers: producers, selected: selected});
+    }
+
+    getVoteActions = () => {
+        let producers = [];
+        this.state.producers.forEach((p) => {
+            if(p.isSelect){
+                producers.push(p.owner);
+            }
+        });
+        producers.sort();
+
+        let actions = [{
+          account: 'eosio',
+          name: 'voteproducer',
+          authorization: [{
+            actor: this.props.account,
+            permission: this.props.permission,
+          }],
+          data: {
+            voter: this.props.account,
+            proxy: '',
+            producers: producers,
+          },
+        }];
+    
+        return actions;
+    }
+
+    async doVote (){
+        let actions = this.getVoteActions();
+        let resp = await Utils.dispatchActiionData(this, { type: 'common/sendEosAction', payload:{actions: actions}});
+        if(resp.transaction_id){
+            Toast.info("投票成功");
+            return;
+        }
+
+        Toast.info("投票失败");
+    }
+
+    voteProc = () =>{
+        if(this.state.selected < 21){
+            let dialog = Modal.alert('温馨提示', <div>您的选择少于21个节点，交易REX必须要对至少21个节点投过票或代理投票，确定进行投票?</div>, [
+                { text: '重新选择', onPress: () => {}},
+                { text: '确定', onPress: () =>{dialog.close();  this.doVote()}},
+            ])            
+            return;
+        }
+
+        this.doVote();
+    }
+
+    selectItem = (rowData) => {
+        let newdata = new Array();
+        let quantity = 0;
+        this.state.producers.forEach((item) => {
+            if(item.owner == rowData.owner){
+                item.isSelect = !item.isSelect;
+            }
+
+            if(item.isSelect){
+                quantity++;  
+            }
+            newdata.push(item);
+        })
+
+        this.setState({producers: newdata, selected: quantity});
+    }
     render() {
         return <div style={styles.rootDiv}>
             <div style={styles.headerDiv}>
@@ -75,7 +125,7 @@ class NodeVoting extends Component{
                 pageSize={4}
                 ref={el => this.lv = el}
                 style={{paddingLeft: Auto.WHT(30), backgroundColor: '#FFFFFF', paddingBottom: Auto.WHT(100), }}
-                dataSource={this.state.dataSource.cloneWithRows(this.state.data)}
+                dataSource={this.state.dataSource.cloneWithRows(this.state.producers)}
                 pullToRefresh={<PullToRefresh 
                     refreshing={this.props.loading} 
                     onRefresh={this.onRefresh} />
@@ -85,46 +135,26 @@ class NodeVoting extends Component{
             />
             <div style={styles.footDiv}>
                <p style={styles.foottext}>已选节点：{this.state.selected}/21</p>
-               <Button type="ghost" onClick={this.onVote.bind(this)} style={styles.footbtn} activeStyle={{opacity: '0.5'}}>投票</Button>
+               <Button type="ghost" onClick={this.voteProc.bind(this)} style={styles.footbtn} activeStyle={{opacity: '0.5'}}>投票</Button>
             </div>
         </div>
     }
 
     _renderRow = (rowData, sectionID, rowID) => {
         return (<div key={rowID} style={styles.rowDiv}>
-            <img src={rowData.icon}  style={styles.nodeimg} />  
+            <img src={rowData.icon ? rowData.icon : '../img/help.png'}  style={styles.nodeimg} />  
             <div style={styles.rownodeout}>
-                <p style={styles.nodename}>{rowData.name}</p>
-                <p style={styles.regiontext}>{rowData.region}</p>
+                <p style={styles.nodename}>{rowData.owner}</p>
+                {/* <p style={styles.regiontext}>{rowData.region}</p> */}
             </div>
             <Button type="ghost" onClick={this.selectItem.bind(this,rowData)} style={styles.listbtn} activeStyle={{opacity: '0.5'}}
-                icon={<img src={rowData.ischeck ? '../img/check.png' : '../img/check_h.png'} style={styles.listbtnimg} />}/>
+                icon={<img src={rowData.isSelect ? '../img/check.png' : '../img/check_h.png'} style={styles.listbtnimg} />}/>
         </div>)
     }
 
-    onVote = () => {
-       
-    }
-
-    selectItem = (rowData) => {
-        if(this.state.selected < 21){
-            let newdata = new Array();
-            let quantity = this.state.selected;
-            for(let i in this.state.data){
-                let item = this.state.data[i];
-                if(item.name == rowData.name){
-                    item.ischeck = !item.ischeck;
-                    quantity++;  
-                }
-                newdata.push(item);
-            }
-            this.setState({data: newdata, selected: quantity});
-        }
-    }
-  
 }
 
-export default connect(({  }) => ({  }))(injectIntl(NodeVoting));
+export default connect(({ common, rex, vote }) => ({ ...common, ...rex, ...vote }))(injectIntl(NodeVoting));
 
 const styles = {
     rootDiv: {

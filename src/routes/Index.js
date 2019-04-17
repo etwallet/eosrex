@@ -166,7 +166,7 @@ class Index extends React.Component {
   }
 } 
 
-export default connect(({common }) => ({...common }))(injectIntl(Index));
+export default connect(({common, vote }) => ({...common, ...vote }))(injectIntl(Index));
 
 const styles = { 
   rootDiv:{
