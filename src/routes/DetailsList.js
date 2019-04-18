@@ -5,6 +5,7 @@ import { injectIntl } from 'react-intl';
 import moment from "moment";
 import PropTypes from 'prop-types';
 import Auto from '../utils/Auto'
+import Utils from '../utils/Utils'
 import Constants from '../utils/Constants'
 import { Toast, PullToRefresh, ListView, Button, WhiteSpace, List, Modal} from 'antd-mobile';
 var ScreenWidth = document.documentElement.clientWidth;
@@ -18,21 +19,56 @@ class DetailsList extends Component{
         this.state = {
             dataSource,
             isbuysell: this.props.location.query ? this.props.location.query.isBuySell : localStorage.getItem('buy_sell'),
-            data: [
-                {transaction: false, quantity: '9 REX', conversionratio: '1 EOS ≈ 500 REX', createdate: 1520840297000, },
-                {transaction: false, quantity: '99 REX', conversionratio: '1 EOS ≈ 500 REX', createdate: 1520840297000, },
-                {transaction: true, quantity: '999 REX', conversionratio: '1 EOS ≈ 500 REX', createdate: 1520840297000, },
-                {transaction: false, quantity: '9.9 REX', conversionratio: '1 EOS ≈ 500 REX', createdate: 1520840297000, },
-                {transaction: true, quantity: '0.99 REX', conversionratio: '1 EOS ≈ 500 REX', createdate: 1520840297000, },
-                {transaction: false, quantity: '0.999 REX', conversionratio: '1 EOS ≈ 500 REX', createdate: 1520840297000, },
-            ]
+            data: []
         }
     }
-
-    componentDidMount() {
-        
+    componentWillMount(){
+      this.getListData();
     }
-
+    componentDidMount() {
+       
+    }
+    async getListData(){
+        // alert(JSON.stringify(this.props.rexpool));
+        let  total_rex = 0.0000;
+        let  total_lendable = 0.0000;
+        try {
+            let s1 = Utils.sliceUnit(this.props.rexpool.total_rex);
+            let s2 = Utils.sliceUnit(this.props.rexpool.total_lendable);
+            total_rex = parseFloat(s1);
+            total_lendable = parseFloat(s2);
+          } catch (error) {
+            total_rex = 0.0000;
+            total_lendable = 0.0000;
+        }
+        // alert("total_rex="+total_rex+" total_lendable=" + total_lendable);
+        let resp = await Utils.dispatchActiionData(this, { type: 'common/querySellRexInfo', payload:{account: this.props.account}});
+        // let resp = [
+        //     {transaction: false, quantity: '9 REX', conversionratio: '1 EOS ≈ 500 REX', createdate: 1520840297000, },
+        // ];
+        // alert("resp"+JSON.stringify(resp));
+        if(resp && resp.rows){
+            let retArray = new Array();
+            resp.rows.forEach(function(val,index){
+                let price = 0;
+                try {
+                    let s3 =  Utils.sliceUnit(val.rex_requested);
+                    let amount = parseFloat(s3);
+                    let tmp1 = (total_lendable+amount).toFixed(4);
+                    let tmp2 = (total_rex*tmp1/total_lendable).toFixed(4);
+                    let tmp3 = (tmp2 - total_rex).toFixed(4);
+                    price = (tmp3/amount).toFixed(4);
+                    // alert("tmp1="+tmp1 + " tmp2=" + tmp2 + " tmp3=" + tmp3 +" price="+price);
+                } catch (error) {
+                    price = 0;
+                }
+                retArray[index] = {
+                    transaction: false, quantity: val.rex_requested, conversionratio: '1 EOS ≈ '+price+' REX', createdate: val.order_time, 
+                };
+            });
+            this.setState({data: retArray});
+        }
+    }
     onRefresh() {
 
     }
@@ -40,11 +76,31 @@ class DetailsList extends Component{
     onEndReached() {
 
     }
-
+    async refundTransaction(){
+       let actions = [{
+        account: 'eosio',
+        name: 'cnclrexorder',
+        authorization: [{
+          actor: this.props.account,
+          permission: this.props.permission,
+        }],
+        data: {
+          owner: this.props.account,
+        },
+      }];
+    //    alert('refundTransaction='+JSON.stringify(actions));
+       let resp = await Utils.dispatchActiionData(this, { type: 'common/sendEosAction', payload:{actions: actions}});
+    //    alert("resp="+JSON.stringify(resp));
+       if(resp){
+        Toast.info("撤单成功");
+       }else{
+        Toast.info("撤单失败");
+       }
+    }
     onWithdraw = () => {
         Modal.alert('', '您是否撤回这次交易？', [
             { text: '取消', onPress: () => console.log('取消'), style: 'default' },
-            { text: '确定', onPress: () => console.log('确定') },
+            { text: '确定', onPress: () => this.refundTransaction() },
         ]);
     }
 
@@ -77,7 +133,7 @@ class DetailsList extends Component{
             <List>
                 <List.Item wrap>出售数量：{rowData.quantity}</List.Item>
                 <List.Item wrap>兑换比例：{rowData.conversionratio}</List.Item>
-                <List.Item wrap>成交时间：{moment(rowData.createdate).format('hh:mm:ss')}</List.Item>
+                <List.Item wrap>成交时间：{moment(rowData.createdate).format('HH:mm:ss')}</List.Item>
             </List>
             <WhiteSpace size="lg" />
         </div>)
@@ -85,7 +141,7 @@ class DetailsList extends Component{
   
 }
 
-export default connect(({  }) => ({  }))(injectIntl(DetailsList));
+export default connect(({ common,}) => ({ ...common,}))(injectIntl(DetailsList));
 
 const styles = {
     rootDiv: {

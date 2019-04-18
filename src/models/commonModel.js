@@ -117,8 +117,36 @@ export default {
         if(callback) callback(resp);
       } catch (error) {
         console.log("+++++app/models/commonModel.js++++sendEosAction-error:",JSON.stringify(error));
+        if(callback) callback(null);
       }
     },
+    //查询卖单
+    *querySellRexInfo({ payload, callback }, { select,  call, put }) {
+      try {
+        if(!payload.account){
+          if(callback) callback(null);
+          return;
+        }
+        
+        let network = yield select(state => state.common.network);  
+        var eos = window.scatter.eos(network, window.Eos);
+        var obj = new Object();
+        obj.json = true;
+        obj.code = 'eosio';
+        obj.scope = 'eosio';
+        obj.table = 'rexqueue';
+        obj.limit = 1;
+        obj.lower_bound = payload.account;
+        // obj.table_key = 'owner';
+        let resp = yield eos.getTableRows(obj);
+
+        if(callback) callback(resp);
+      } catch (error) {
+        console.log("+++++app/models/common.js++++querySellRexInfo-error:",JSON.stringify(error));
+        if(callback) callback(null);
+      }
+    },
+
   },
 
   reducers: {
