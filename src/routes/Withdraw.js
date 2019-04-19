@@ -36,7 +36,7 @@ class Withdraw extends React.Component {
         }],
         data: {
           owner: this.props.account,
-          amount: this.state.quantity + ' EOS',
+          amount: formatEosQua(this.state.quantity + ' EOS'), 
         },
       }];
     //    alert('refundTransaction='+JSON.stringify(actions));

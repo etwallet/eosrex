@@ -74,17 +74,17 @@ class BuyandSell extends React.Component {
   }
 
   withdraw = () => {
-    var tmp = 0;
-    try {
-      let s2 = Utils.sliceUnit(this.props.eosBalance);
-      tmp = parseFloat(s2);
-    } catch (error) {
-      tmp = 0;
-    }
-    if(tmp <= 0){
-      Toast.info("余额不足");
-      return ;
-    }
+    // var tmp = 0;
+    // try {
+    //   let s2 = Utils.sliceUnit(this.props.eosBalance);
+    //   tmp = parseFloat(s2);
+    // } catch (error) {
+    //   tmp = 0;
+    // }
+    // if(tmp <= 0){
+    //   Toast.info("余额不足");
+    //   return ;
+    // }
     this.props.dispatch(routerRedux.push({pathname: '/Withdraw', query: { }}))
   }
   doTrans = () => {
@@ -173,27 +173,7 @@ class BuyandSell extends React.Component {
     return actions;
   }
 
-  /**
-   * 提币
-   */
-  getWithdrawActions = () =>{
-    let actions = [
-      {
-        account: 'eosio',
-        name: 'withdraw',
-        authorization: [{
-          actor: this.props.account,
-          permission: this.props.permission,
-        }],
-        data: {
-          owner: this.props.account,
-          amount: formatEosQua(this.state.quantity + ' EOS'),
-        },
-      }
-    ];
-
-    return actions;
-  }
+  
 
   getRexTransActions = () => {
     let actions = this.state.actionsList[this.state.transType].actions();
