@@ -74,7 +74,7 @@ class BuyandSell extends React.Component {
   }
 
   withdraw = () => {
-    this.props.dispatch(routerRedux.push({pathname: '/Withdraw', query: { isBuySell: this.state.buysell }}))
+    this.props.dispatch(routerRedux.push({pathname: '/Withdraw', query: { }}))
   }
   doTrans = () => {
     if(this.props.isVoted){ // 投过票了
@@ -246,9 +246,9 @@ class BuyandSell extends React.Component {
         <div style={{display: 'flex', flexDirection: 'column', }}>
           <div style={styles.listitemout}>
             {this.state.isSwitch ?
-            <InputItem  defaultValue="2100.22 EOS" placeholder="please input content" data-seed="logId">我的余额：{this.props.eosBalance} EOS</InputItem>
+            <InputItem  defaultValue="0 EOS" placeholder="please input content" data-seed="logId">我的余额：{this.props.eosBalance} EOS</InputItem>
             :
-            <InputItem  defaultValue="21.22 EOS" placeholder="please input content" data-seed="logId">抵押资源：</InputItem>
+            <InputItem  defaultValue="0 EOS" placeholder="please input content" data-seed="logId">抵押资源：</InputItem>
             }
             <Button type="ghost" onClick={_el => this.setState({isSwitch: !this.state.isSwitch})} style={styles.listbtn} activeStyle={{opacity: '0.5'}}>切换</Button>
           </div>

@@ -42,7 +42,7 @@ class Withdraw extends React.Component {
             activeStyle={{opacity: '0.5'}} icon={<img src={'../img/help.png'}  style={styles.reportimg} />} />
         </div>
         <div style={styles.headbottomout}>
-          <p style={styles.headbottomleft}>余额: 200EOS</p>
+          <p style={styles.headbottomleft}>余额: { this.props.eosBalance} EOS</p>
         </div>
         <div style={styles.centertopout}>
           <p style={styles.centertoptext}>收款账户：{ this.props.account}</p>
