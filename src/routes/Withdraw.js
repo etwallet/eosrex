@@ -26,11 +26,27 @@ class Withdraw extends React.Component {
   }
 
 
-  description = () => {
-  }
- 
-  doTrans = () => {
- 
+  sendWithdraw = async () => {
+    let actions = [{
+        account: 'eosio',
+        name: 'withdraw',
+        authorization: [{
+          actor: this.props.account,
+          permission: this.props.permission,
+        }],
+        data: {
+          owner: this.props.account,
+          amount: this.state.quantity + ' EOS',
+        },
+      }];
+    //    alert('refundTransaction='+JSON.stringify(actions));
+       let resp = await Utils.dispatchActiionData(this, { type: 'common/sendEosAction', payload:{actions: actions}});
+    //    alert("resp="+JSON.stringify(resp));
+       if(resp){
+        Toast.info("成功");
+       }else{
+        Toast.info("失败");
+       }
   }
 
 
@@ -38,11 +54,12 @@ class Withdraw extends React.Component {
     return (<div style={styles.rootDiv}>
       <div style={{background:'#FFFFFF', }}>
         <div style={styles.headtopout}>
-          <Button type="ghost"  style={styles.centertopbtn} onClick={_el => this.description()}
+          <Button type="ghost"  style={styles.centertopbtn} onClick={_el => {}}
             activeStyle={{opacity: '0.5'}} icon={<img src={'../img/help.png'}  style={styles.reportimg} />} />
         </div>
         <div style={styles.headbottomout}>
           <p style={styles.headbottomleft}>余额: { this.props.eosBalance} EOS</p>
+          {/* <p style={styles.headbottomleft}>余额: 200 EOS</p> */}
         </div>
         <div style={styles.centertopout}>
           <p style={styles.centertoptext}>收款账户：{ this.props.account}</p>
@@ -59,7 +76,7 @@ class Withdraw extends React.Component {
 
       <div style={styles.footDiv}>
         <Button type="ghost" style={styles.footbtn} activeStyle={{opacity: '0.5'}}
-        onClick={this.doTrans.bind(this)}>提现</Button>
+        onClick={this.sendWithdraw.bind(this)}>提现</Button>
       </div>
 
     </div>)
