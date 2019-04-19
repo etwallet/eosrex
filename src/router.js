@@ -33,6 +33,7 @@ export default function RouterConfig({history,app}) {
   const GameDescription = Dynamic({app,models:()=>[require("./models/")],component:()=>import('./routes/GameDescription')});
   const BuyandSell = Dynamic({app,models:()=>[require("./models/")],component:()=>import('./routes/BuyandSell')});
   const DetailsList = Dynamic({app,models:()=>[require("./models/")],component:()=>import('./routes/DetailsList')});
+  const Withdraw = Dynamic({app,models:()=>[require("./models/")],component:()=>import('./routes/Withdraw')});
   const NodeVoting = Dynamic({app,models:()=>[require("./models/")],component:()=>import('./routes/NodeVoting')});
   return (
     <LocaleProvider locale={appLocale.antd}>
@@ -43,6 +44,7 @@ export default function RouterConfig({history,app}) {
             <Route path="/" exact component={Index} />
             <Route path="/BuyandSell" exact component={BuyandSell} />
             <Route path="/DetailsList" exact component={DetailsList} />
+            <Route path="/Withdraw" exact component={Withdraw} />
             <Route path="/NodeVoting" exact component={NodeVoting} />
           </Switch>
         </Router>

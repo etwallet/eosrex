@@ -17,7 +17,7 @@ var TransType = {
   SELL: 1,
 };
 
-class BuyandSell extends React.Component {
+class Withdraw extends React.Component {
   constructor(props) {
     super(props);
     const dataSource = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
@@ -44,9 +44,6 @@ class BuyandSell extends React.Component {
     Utils.dispatchActiionData(this, { type: 'rex/getMyRexInfo', payload:{account: this.props.account}});
   }
 
-  onlease = () => {
-    this.props.dispatch(routerRedux.push({pathname: '/', query: {   }}))
-  }
 
   description = () => {
     this.props.dispatch(routerRedux.push({pathname: '/GameDescription', query: {   }}))
@@ -204,8 +201,9 @@ class BuyandSell extends React.Component {
     return (<div style={styles.rootDiv}>
       <div style={{background:'#FFFFFF', }}>
         <div style={styles.headtopout}>
-          <p style={styles.headtoptext}>总量(REX)</p>
-          <Button type="ghost" onClick={this.onlease.bind(this)} style={styles.headtopbtn} activeStyle={{opacity: '0.5'}}>租赁</Button>
+          {/* <p style={styles.headtoptext}>总量(REX)</p> */}
+          <Button type="ghost"  style={styles.centertopbtn} onClick={_el => this.description()}
+            activeStyle={{opacity: '0.5'}} icon={<img src={'../img/help.png'}  style={styles.reportimg} />} />
         </div>
         <div style={styles.headbottomout}>
           <p style={styles.headbottomleft}>{Utils.sliceUnit(this.props.rexpool.totalRex)}</p>
@@ -242,7 +240,7 @@ class BuyandSell extends React.Component {
           <SegmentedControl values={this.state.values} onChange={this.onChange} style={{flex: 2, height: Auto.WHT(62),}}/>
           <Button type="ghost" onClick={this.onBuySellList.bind(this)} style={styles.sellbtn} activeStyle={{opacity: '0.5'}} >{this.state.buysell ? "出售列表" : "买卖列表"}</Button>
         </div>
-        {this.state.buysell ?
+   
         <div style={{display: 'flex', flexDirection: 'column', }}>
           <div style={styles.listitemout}>
             {this.state.isSwitch ?
@@ -257,34 +255,25 @@ class BuyandSell extends React.Component {
             <Button type="ghost" style={styles.listbtn} activeStyle={{opacity: '0.5'}}>全部</Button>
           </div>
         </div>
-        :
-        <div style={styles.listitemout}>
-          <InputItem  defaultValue="21.22 EOS" placeholder="请输入EOS数量" ref={el => this.autoFocusInst = el}>出售数量：</InputItem>
-          <Button onClick={this.all} type="ghost" style={styles.listbtn} activeStyle={{opacity: '0.5'}}>全部</Button>
-        </div>
-        }
+        
       </div>
 
-      {this.state.buysell &&
+      {/* {this.state.buysell &&
       <div style={{padding: Auto.WHT(30), }}>
         <p style={styles.ordertext}>订单确认：</p>
         <div style={styles.orderout}>花费20 EOS，为您兑换20000 REX</div>
-      </div>}
+      </div>} */}
 
       <div style={styles.footDiv}>
         <Button type="ghost" style={styles.footbtn} activeStyle={{opacity: '0.5'}}
-        onClick={this.doTrans.bind(this, this.state.transType)}>{this.state.buysell ? "一键购买" : "一键出售"}</Button>
+        onClick={this.doTrans.bind(this, this.state.transType)}>提现</Button>
       </div>
 
-      <div style={styles.footDivWithdraw}>
-        <Button type="ghost" style={styles.footbtnWithdraw} activeStyle={{opacity: '0.5'}}
-        onClick={this.withdraw.bind(this)}>提币至当前账户</Button>
-      </div>
     </div>)
   }
 } 
 
-export default connect(({ common, rex }) => ({ ...common, ...rex }))(injectIntl(BuyandSell));
+export default connect(({ common, rex }) => ({ ...common, ...rex }))(injectIntl(Withdraw));
 
 const styles = { 
   rootDiv:{
@@ -447,24 +436,6 @@ const styles = {
     borderRadius: Auto.WHT(10),
   },
 
-  footDivWithdraw: {
-    width: ScreenWidth, 
-    boxSizing: 'border-box', 
-    paddingTop: Auto.WHT(15), 
-    paddingLeft: Auto.WHT(30), 
-    paddingRight: Auto.WHT(30), 
-    paddingBottom: Auto.WHT(40),
-  },
-  footbtnWithdraw: {
-    width: '100%', 
-    border: '1px #108EE9 solid', 
-    color: '#108EE9', 
-    height: Auto.WHT(94), 
-    background: '#FFFFFF', 
-    textDecoration: 'none', 
-    fontSize: Auto.WHT(36), 
-    lineHeight: Auto.WHT(94), 
-    borderRadius: Auto.WHT(10),
-  },
+  
 
 }
