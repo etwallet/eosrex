@@ -67,6 +67,8 @@ class DetailsList extends Component{
                 };
             });
             this.setState({data: retArray});
+        }else{
+            Toast.info("暂无更多数据");
         }
     }
     onRefresh() {
