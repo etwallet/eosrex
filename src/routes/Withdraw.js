@@ -84,23 +84,7 @@ const styles = {
     paddingLeft: Auto.WHT(30), 
     paddingRight: Auto.WHT(30), 
   },
-  headtoptext: {
-    flex: 1, 
-    color: '#000000', 
-    fontSize: Auto.WHT(34), 
-    lineHeight: Auto.WHT(42),
-  },
-  headtopbtn: {
-    width: Auto.WHT(164), 
-    height: Auto.WHT(60), 
-    lineHeight: Auto.WHT(60), 
-    background: '#FFFFFF', 
-    border: '1px #108EE9 solid', 
-    textDecoration: 'none', 
-    borderRadius: Auto.WHT(6), 
-    fontSize: Auto.WHT(26), 
-    color: '#108EE9', 
-  },
+  
   headbottomout: {
     display: 'flex', 
     flexDirection: 'row', 
@@ -113,21 +97,6 @@ const styles = {
     fontSize: Auto.WHT(48), 
     lineHeight: Auto.WHT(67), 
     paddingBottom: Auto.WHT(22),
-  },
-  headbottomright: {
-    display: 'flex', 
-    flexDirection: 'row', 
-    alignItems: 'center',
-  },
-  headbottomtext: {
-    color: '#888888', 
-    fontSize: Auto.WHT(32), 
-    lineHeight: Auto.WHT(45), 
-  },
-  headbottomimg: {
-    width: Auto.WHT(16),
-    height: Auto.WHT(26), 
-    marginLeft: Auto.WHT(30)
   },
 
   centerDiv: {
@@ -162,51 +131,11 @@ const styles = {
     height: Auto.WHT(30),
     margin: 0,
   },
-  centerbottom: {
-    color: '#888888', 
-    fontSize: Auto.WHT(28),
-  },
-
-  listDiv: {
-    display: 'flex', 
-    flexDirection: 'column',
-    background: '#FFFFFF',
-  },
-  sellbtn: {
-    flex: 1,
-    background: 'transparent', 
-    border: 'none', 
-    textDecoration: 'none', 
-    borderRadius: 0, 
-    fontSize: Auto.WHT(28), 
-    color: '#BBBBBB',
-  },
+  
   listitemout: {
     display: 'flex', 
     flexDirection: 'row', 
     alignItems: 'center', 
-  },
-  listbtn: {
-    width: Auto.WHT(112), 
-    height: Auto.WHT(60), 
-    lineHeight: Auto.WHT(60), 
-    background: '#108EE9', 
-    border: 'none', 
-    textDecoration: 'none', 
-    borderRadius: Auto.WHT(6), 
-    fontSize: Auto.WHT(26), 
-    color: '#FFFFFF',
-  },
-  ordertext: {
-    color: '#000000', 
-    fontSize: Auto.WHT(28), 
-    paddingTop: Auto.WHT(10), 
-    paddingBottom: Auto.WHT(10),
-  },
-  orderout: {
-    color: '#888888', 
-    fontSize: Auto.WHT(28), 
-    lineHeight: Auto.WHT(40),
   },
 
   footDiv: {
@@ -228,7 +157,6 @@ const styles = {
     lineHeight: Auto.WHT(94), 
     borderRadius: Auto.WHT(10),
   },
-
   
 
 }
