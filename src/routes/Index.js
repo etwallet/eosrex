@@ -28,12 +28,12 @@ class Index extends React.Component {
 
   componentDidMount() {
     document.addEventListener('scatterLoaded', scatterExtension => {
-      Utils.dispatchActiionData(this, { type: 'common/login', payload:{}});
+      this.login();
     });
 
-    setTimeout(()=>{
-      this.login();
-    }, 10);
+    // setTimeout(()=>{
+    //   this.login();
+    // }, 10);
   }
 
   async login() {
@@ -42,8 +42,12 @@ class Index extends React.Component {
       return;
     }
     this.setState({toAccount: accountInfo.name});
+    let resp = await Utils.dispatchActiionData(this, { type: 'common/getRexInfo', payload:{}});
+    if(resp){
+      this.update_costval();
+    }
   }
-
+  //计算 租赁  CPU/NET价格
   update_costval(){
    let cpuval_price = 0;
    let netval_price = 0;

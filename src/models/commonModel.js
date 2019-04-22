@@ -112,8 +112,10 @@ export default {
           lent_percent = (float_total_lent * 100 / float_total_lendable).toFixed(2);
         }
         yield put({ type: 'update', payload: {rexpool: rexpool,lent_percent: lent_percent} });
+        if(callback) callback(true);
       } catch (error) {
         console.log("+++++app/models/commonModel.js++++getRexInfo-error:",JSON.stringify(error));
+        if(callback) callback(false);
       }
     },
     // 发送eos交易
