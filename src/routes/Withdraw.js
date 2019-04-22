@@ -1,9 +1,8 @@
 import React from 'react';
-import { Toast, PullToRefresh, ListView, Button, Modal, InputItem, List, WhiteSpace, SegmentedControl} from 'antd-mobile';
+import { Toast, Button, Modal, InputItem, WhiteSpace,} from 'antd-mobile';
 import { injectIntl } from 'react-intl';
 import { connect } from 'dva';
 import Auto from '../utils/Auto'
-import {routerRedux} from 'dva/router';
 import Utils from '../utils/Utils'
 import {formatEosQua} from '../utils/FormatUtil';
 
