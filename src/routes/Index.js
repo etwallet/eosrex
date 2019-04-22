@@ -44,46 +44,51 @@ class Index extends React.Component {
     this.setState({toAccount: accountInfo.name});
     let resp = await Utils.dispatchActiionData(this, { type: 'common/getRexInfo', payload:{}});
     if(resp){
-      this.update_costval();
+      this.update_costval_cpu(this.state.cpuval);
+      this.update_costval_net(this.state.netval);
     }
   }
-  //计算 租赁  CPU/NET价格
-  update_costval(){
-   let cpuval_price = 0;
-   let netval_price = 0;
-   
-   try {
-    let total_rent = Utils.sliceUnit(this.props.rexpool.total_rent);
-    let total_unlent = Utils.sliceUnit(this.props.rexpool.total_unlent);
-    let float_total_rent = parseFloat(total_rent);
-    let float_total_unlent = parseFloat(total_unlent);
-    let cpuval = parseFloat(this.state.cpuval);
-    let netval = parseFloat(this.state.netval);
 
-    let tmp = (float_total_rent + cpuval).toFixed(4);
-    let tmp1 = ((float_total_unlent*cpuval)/tmp).toFixed(4);
-    cpuval_price = (tmp1/cpuval).toFixed(4);
-    
-    let tmp2 = (float_total_rent + netval).toFixed(4);
-    let tmp3 = ((float_total_unlent*netval)/tmp2).toFixed(4);
-    netval_price = (tmp3/netval).toFixed(4);
-    // alert("tmp="+tmp + "tmp1="+tmp1 + " tmp2=" + tmp2 + " tmp3=" + tmp3 +" cpuval_price="+cpuval_price + " netval_price="+netval_price);
-  } catch (error) {
-    cpuval_price = 0;
-    netval_price = 0;
+  calc_costval(tmp_val){
+    let val_price = 0;
+    try {
+      let total_rent = Utils.sliceUnit(this.props.rexpool.total_rent);
+      let total_unlent = Utils.sliceUnit(this.props.rexpool.total_unlent);
+      let float_total_rent = parseFloat(total_rent);
+      let float_total_unlent = parseFloat(total_unlent);
+      let val = parseFloat(tmp_val);
+  
+      let tmp = (float_total_rent + val).toFixed(4);
+      let tmp1 = ((float_total_unlent*val)/tmp).toFixed(4);
+      val_price = (tmp1/val).toFixed(4);
+      
+      // alert("tmp="+tmp + "tmp1="+tmp1 + " val_price="+val_price);
+    } catch (error) {
+      val_price = 0;
+    }
+    return val_price;
   }
-   this.setState({cpuval_price: cpuval_price,netval_price: netval_price});
+  //计算 租赁  CPU价格
+  update_costval_cpu(tmp_cpuval){
+   let cpuval_price = this.calc_costval(tmp_cpuval);
+   this.setState({cpuval_price: cpuval_price});
   }
+   //计算 租赁  NET价格
+  update_costval_net(tmp_netval){
+    let netval_price = this.calc_costval(tmp_netval);
+    this.setState({netval_price: netval_price});
+  }
+
   onCpuChange = (cpuval) => {
     // console.log(val);
     this.setState({ cpuval });
-    this.update_costval();
+    this.update_costval_cpu(cpuval);
   }
 
   onNetChange = (netval) => {
     // console.log(val);
     this.setState({ netval });
-    this.update_costval();
+    this.update_costval_net(netval);
   }
 
   onTimeChange = (timeval) => {
@@ -104,38 +109,47 @@ class Index extends React.Component {
       Toast.info("请先登录", 1);
       return;
     }
-    let actions = [
-      {
-        account: 'eosio',
-        name: 'rentcpu',
-        authorization: [{
-          actor: this.props.account,
-          permission: this.props.permission,
-        }],
-        data: {
-          from: this.props.account,
-          receiver: this.props.toAccount,
-          loan_payment: formatEosQua(this.state.cpuval + ' EOS'),
-          loan_fund: '0.0000 EOS',
-        },
-      },
-      {
-        account: 'eosio',
-        name: 'rentnet',
-        authorization: [{
-          actor: this.props.account,
-          permission: this.props.permission,
-        }],
-        data: {
-          from: this.props.account,
-          receiver: this.props.toAccount,
-          loan_payment: formatEosQua(this.state.netval + ' EOS'),
-          loan_fund: '0.0000 EOS',
-        },
-      }
-    ];
+    try {
+      let tmp_cpuval = parseFloat(this.state.cpuval);
+      let cpu_loan_fund = ((this.state.timeval/30 -1) * tmp_cpuval).toFixed(4);
 
-    Utils.dispatchActiionData(this, { type: 'common/sendEosAction', payload:{actions: actions}});
+      let tmp_netval = parseFloat(this.state.netval);
+      let net_loan_fund = ((this.state.timeval/30 -1) * tmp_netval).toFixed(4);
+
+      let actions = [
+        {
+          account: 'eosio',
+          name: 'rentcpu',
+          authorization: [{
+            actor: this.props.account,
+            permission: this.props.permission,
+          }],
+          data: {
+            from: this.props.account,
+            receiver: this.state.toAccount,
+            loan_payment: formatEosQua(this.state.cpuval + ' EOS'),
+            loan_fund: cpu_loan_fund + ' EOS',
+          },
+        },
+        {
+          account: 'eosio',
+          name: 'rentnet',
+          authorization: [{
+            actor: this.props.account,
+            permission: this.props.permission,
+          }],
+          data: {
+            from: this.props.account,
+            receiver: this.state.toAccount,
+            loan_payment: formatEosQua(this.state.netval + ' EOS'),
+            loan_fund: net_loan_fund + ' EOS',
+          },
+        }
+      ];
+      Utils.dispatchActiionData(this, { type: 'common/sendEosAction', payload:{actions: actions}});
+    } catch (error) {
+      
+    }
   }
 
   render() {
