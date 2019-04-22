@@ -21,6 +21,7 @@ class Index extends React.Component {
       netval: 1.5,
       timeval: 10,
       toAccount: this.props.account,
+      percent:0,
     };
   }
 
@@ -113,7 +114,7 @@ class Index extends React.Component {
         </div>
         <div style={styles.headbottomout}>
           <p style={styles.headbottomtext}>{Utils.sliceUnit(this.props.rexpool.totalUnLent)}</p>
-          <Progress percent={40} position="normal" unfilled={true} style={styles.progress} barStyle={styles.barout}/>
+          <Progress percent={this.state.percent} position="normal" unfilled={true} style={styles.progress} barStyle={styles.barout}/>
           <div style={styles.rentout}>
             <p style={styles.renttext}>已出租：{Utils.sliceUnit(this.props.rexpool.totalLent)}</p>
             <p style={styles.renttext}>总量：{Utils.sliceUnit(this.props.rexpool.totalLendable)}</p>

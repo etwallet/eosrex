@@ -74,17 +74,17 @@ class BuyandSell extends React.Component {
   }
 
   withdraw = () => {
-    // var tmp = 0;
-    // try {
-    //   let s2 = Utils.sliceUnit(this.props.eosBalance);
-    //   tmp = parseFloat(s2);
-    // } catch (error) {
-    //   tmp = 0;
-    // }
-    // if(tmp <= 0){
-    //   Toast.info("余额不足");
-    //   return ;
-    // }
+    var tmp = 0;
+    try {
+      let s2 = Utils.sliceUnit(this.props.eosBalance);
+      tmp = parseFloat(s2);
+    } catch (error) {
+      tmp = 0;
+    }
+    if(tmp <= 0){
+      Toast.info("余额不足");
+      return ;
+    }
     this.props.dispatch(routerRedux.push({pathname: '/Withdraw', query: { }}))
   }
   doTrans = () => {

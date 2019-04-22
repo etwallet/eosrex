@@ -26,6 +26,7 @@ class Withdraw extends React.Component {
 
 
   sendWithdraw = async () => {
+    
     let actions = [{
         account: 'eosio',
         name: 'withdraw',
@@ -58,7 +59,6 @@ class Withdraw extends React.Component {
         </div>
         <div style={styles.headbottomout}>
           <p style={styles.headbottomleft}>余额: { this.props.eosBalance} EOS</p>
-          {/* <p style={styles.headbottomleft}>余额: 200 EOS</p> */}
         </div>
         <div style={styles.centertopout}>
           <p style={styles.centertoptext}>收款账户：{ this.props.account}</p>
