@@ -42,7 +42,7 @@ export default {
           myTotalRex += v;
         });
 
-        rexInfo.totalRex = myTotalRex;
+        rexInfo.total_rex = myTotalRex;
         yield put({ type: 'update', payload: {myRexInfo: rexInfo} });
       } catch (error) {
         console.log("+++++app/models/rexModel.js++++getMyRexInfo-error:",JSON.stringify(error));

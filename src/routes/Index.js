@@ -17,11 +17,10 @@ class Index extends React.Component {
     const dataSource = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
     this.state = {
       dataSource,
-      cpuval: 1.6,
-      netval: 1.5,
-      timeval: 10,
+      cpuval: 0,
+      netval: 0,
+      timeval: 0,
       toAccount: this.props.account,
-      percent:0,
     };
   }
 
@@ -113,11 +112,11 @@ class Index extends React.Component {
           <Button type="ghost" onClick={this.onbuysell.bind(this)} style={styles.headtopbtn} activeStyle={{opacity: '0.5'}}>买卖</Button>
         </div>
         <div style={styles.headbottomout}>
-          <p style={styles.headbottomtext}>{Utils.sliceUnit(this.props.rexpool.totalUnLent)}</p>
-          <Progress percent={this.state.percent} position="normal" unfilled={true} style={styles.progress} barStyle={styles.barout}/>
+          <p style={styles.headbottomtext}>{Utils.sliceUnit(this.props.rexpool.total_unlent)}</p>
+          <Progress percent={this.props.lent_percent} position="normal" unfilled={true} style={styles.progress} barStyle={styles.barout}/>
           <div style={styles.rentout}>
-            <p style={styles.renttext}>已出租：{Utils.sliceUnit(this.props.rexpool.totalLent)}</p>
-            <p style={styles.renttext}>总量：{Utils.sliceUnit(this.props.rexpool.totalLendable)}</p>
+            <p style={styles.renttext}>已出租：{Utils.sliceUnit(this.props.rexpool.total_lent)}</p>
+            <p style={styles.renttext}>总量：{Utils.sliceUnit(this.props.rexpool.total_lendable)}</p>
           </div>
         </div>
       </div>
@@ -152,15 +151,15 @@ class Index extends React.Component {
               min={0.1} step={0.1} value={this.state.netval} onChange={this.onNetChange}/>}
           >NET</List.Item>
           <List.Item wrap
-            extra={<Stepper style={{ width: '100%', minWidth: '100px' }} showNumber max={30}
-              min={1} step={1} value={this.state.timeval} onChange={this.onTimeChange}/>}
+            extra={<Stepper style={{ width: '100%', minWidth: '100px' }} showNumber max={300}
+              min={30} step={30} value={this.state.timeval} onChange={this.onTimeChange}/>}
           >租用时长(天)</List.Item>
         </List>
       </div>
 
       <div style={styles.footDiv}>
         <p style={styles.description}>订单确认：</p>
-        <div style={styles.explaintext}>{this.props.account}为{this.state.toAccount}租赁抵押30天，花费1.6 EOS租赁CPU 27.96 EOS，花费1.5 EOS租赁NET 28.96 EOS。</div>
+        <div style={styles.explaintext}>{this.props.account}为{this.state.toAccount}租赁抵押{this.state.timeval}天，花费1.6 EOS租赁CPU 27.96 EOS，花费1.5 EOS租赁NET 28.96 EOS。</div>
         <Button onClick={this.doRent} type="ghost" style={styles.footbtn} activeStyle={{opacity: '0.5'}}>一键租赁</Button>
       </div>
     </div>)

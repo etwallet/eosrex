@@ -199,7 +199,7 @@ class BuyandSell extends React.Component {
           <Button type="ghost" onClick={this.onlease.bind(this)} style={styles.headtopbtn} activeStyle={{opacity: '0.5'}}>租赁</Button>
         </div>
         <div style={styles.headbottomout}>
-          <p style={styles.headbottomleft}>{Utils.sliceUnit(this.props.rexpool.totalRex)}</p>
+          <p style={styles.headbottomleft}>{Utils.sliceUnit(this.props.rexpool.total_rex)}</p>
           <div style={styles.headbottomright}>
             <p style={styles.headbottomtext}>REX趋势</p>
             <img src={'../img/chevron.png'}  style={styles.headbottomimg} />
@@ -221,7 +221,7 @@ class BuyandSell extends React.Component {
           </List.Item>
           <List.Item wrap >
           <span style={styles.centerbottom}>我的REX：</span>
-          <span style={styles.centerbottom}>{this.props.myRexInfo.totalRex} REX</span>
+          <span style={styles.centerbottom}>{this.props.myRexInfo.total_rex} REX</span>
           </List.Item>
         </List>
       </div>

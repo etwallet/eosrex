@@ -1,6 +1,7 @@
 import Request from '../utils/RequestUtil';
 import { noAttentionPage, attentionPage, plazaPage, biggiePage,} from '../utils/Api';
 import { Toast } from 'antd-mobile';
+import Utils from '../utils/Utils'
 
 export default {
   namespace: 'common',
@@ -17,12 +18,13 @@ export default {
       chainId:'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906'
     },
     rexpool:{
-      totalLent: '0.0000 EOS', // 已出租的EOS总量
-      totalUnLent: '0.0000 EOS', // 可出租的EOS总量
-      totalRent: '0.0000 EOS', // 总租金
-      totalLendable: '0.0000', //总的EOS量
-      totalRex: '0.0000 REX', // REX总量
+      total_lent: '0.0000 EOS', // 已出租的EOS总量
+      total_unlent: '0.0000 EOS', // 可出租的EOS总量
+      total_rent: '0.0000 EOS', // 总租金
+      total_lendable: '0.0000', //总的EOS量
+      total_rex: '0.0000 REX', // REX总量
     },
+    lent_percent: 0, //出租百分比
     isVoted: false,
     myVotes: [],
   },
@@ -98,7 +100,18 @@ export default {
         let rexpoolRemote = info.rows[0];
         let rexpoolLocal = yield select(state => state.common.rexpool);  
         let rexpool = {...rexpoolLocal, ...rexpoolRemote};
-        yield put({ type: 'update', payload: {rexpool: rexpool} });
+
+        let lent_percent = 0;
+        if(rexpool && rexpool.total_lent && rexpool.total_lendable)
+        {
+          let total_lent = Utils.sliceUnit(rexpool.total_lent);
+          let total_lendable = Utils.sliceUnit(rexpool.total_lendable);
+          // alert('total_lent = ' + total_lent + ' total_lendable = ' + total_lendable);
+          let float_total_lent = parseFloat(total_lent).toFixed(4);
+          let float_total_lendable = parseFloat(total_lendable).toFixed(4);
+          lent_percent = (float_total_lent * 100 / float_total_lendable).toFixed(2);
+        }
+        yield put({ type: 'update', payload: {rexpool: rexpool,lent_percent: lent_percent} });
       } catch (error) {
         console.log("+++++app/models/commonModel.js++++getRexInfo-error:",JSON.stringify(error));
       }
