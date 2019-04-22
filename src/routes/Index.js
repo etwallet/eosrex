@@ -1,5 +1,5 @@
 import React from 'react';
-import { Toast, PullToRefresh, ListView, Button, Carousel, Tabs, Badge, NavBar, ActivityIndicator, Progress, InputItem, List, WhiteSpace,Stepper} from 'antd-mobile';
+import { Toast,  ListView, Button,  Progress, InputItem, List, WhiteSpace,Stepper} from 'antd-mobile';
 import { injectIntl } from 'react-intl';
 import { connect } from 'dva';
 import {routerRedux} from 'dva/router';
@@ -17,9 +17,11 @@ class Index extends React.Component {
     const dataSource = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
     this.state = {
       dataSource,
-      cpuval: 0,
-      netval: 0,
-      timeval: 0,
+      cpuval: 0.1,
+      netval: 0.1,
+      timeval: 30,
+      cpuval_price: 0,
+      netval_price: 0,
       toAccount: this.props.account,
     };
   }
@@ -42,14 +44,42 @@ class Index extends React.Component {
     this.setState({toAccount: accountInfo.name});
   }
 
+  update_costval(){
+   let cpuval_price = 0;
+   let netval_price = 0;
+   
+   try {
+    let total_rent = Utils.sliceUnit(this.props.rexpool.total_rent);
+    let total_unlent = Utils.sliceUnit(this.props.rexpool.total_unlent);
+    let float_total_rent = parseFloat(total_rent);
+    let float_total_unlent = parseFloat(total_unlent);
+    let cpuval = parseFloat(this.state.cpuval);
+    let netval = parseFloat(this.state.netval);
+
+    let tmp = (float_total_rent + cpuval).toFixed(4);
+    let tmp1 = ((float_total_unlent*cpuval)/tmp).toFixed(4);
+    cpuval_price = (tmp1/cpuval).toFixed(4);
+    
+    let tmp2 = (float_total_rent + netval).toFixed(4);
+    let tmp3 = ((float_total_unlent*netval)/tmp2).toFixed(4);
+    netval_price = (tmp3/netval).toFixed(4);
+    // alert("tmp="+tmp + "tmp1="+tmp1 + " tmp2=" + tmp2 + " tmp3=" + tmp3 +" cpuval_price="+cpuval_price + " netval_price="+netval_price);
+  } catch (error) {
+    cpuval_price = 0;
+    netval_price = 0;
+  }
+   this.setState({cpuval_price: cpuval_price,netval_price: netval_price});
+  }
   onCpuChange = (cpuval) => {
     // console.log(val);
     this.setState({ cpuval });
+    this.update_costval();
   }
 
   onNetChange = (netval) => {
     // console.log(val);
     this.setState({ netval });
+    this.update_costval();
   }
 
   onTimeChange = (timeval) => {
@@ -144,22 +174,22 @@ class Index extends React.Component {
         <List>
           <List.Item wrap
             extra={<Stepper style={{ width: '100%', minWidth: '100px' }} showNumber max={10} 
-              min={0.1} step={0.1} value={this.state.cpuval} onChange={this.onCpuChange}/>}
+              min={0.1} step={0.1} value={this.state.cpuval} onChange={(cpuval) => {this.onCpuChange(cpuval)}}/>}
           >CPU</List.Item>
           <List.Item wrap
             extra={<Stepper style={{ width: '100%', minWidth: '100px' }} showNumber max={10}
-              min={0.1} step={0.1} value={this.state.netval} onChange={this.onNetChange}/>}
+              min={0.1} step={0.1} value={this.state.netval} onChange={(netval) => {this.onNetChange(netval)}}/>}
           >NET</List.Item>
           <List.Item wrap
             extra={<Stepper style={{ width: '100%', minWidth: '100px' }} showNumber max={300}
-              min={30} step={30} value={this.state.timeval} onChange={this.onTimeChange}/>}
+              min={30} step={30} value={this.state.timeval} onChange={(timeval) => {this.onTimeChange(timeval)}}/>}
           >租用时长(天)</List.Item>
         </List>
       </div>
 
       <div style={styles.footDiv}>
         <p style={styles.description}>订单确认：</p>
-        <div style={styles.explaintext}>{this.props.account}为{this.state.toAccount}租赁抵押{this.state.timeval}天，花费1.6 EOS租赁CPU 27.96 EOS，花费1.5 EOS租赁NET 28.96 EOS。</div>
+        <div style={styles.explaintext}>{this.props.account}为{this.state.toAccount}租赁抵押{this.state.timeval}天，花费{(this.state.cpuval + this.state.netval).toFixed(1)} EOS租赁CPU {this.state.cpuval_price}，租赁NET {this.state.netval_price}。</div>
         <Button onClick={this.doRent} type="ghost" style={styles.footbtn} activeStyle={{opacity: '0.5'}}>一键租赁</Button>
       </div>
     </div>)
