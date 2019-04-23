@@ -38,6 +38,7 @@ class BuyandSell extends React.Component {
         // "producer111f"
       ],
       exchangeradio: 0,  //兑换比例
+      selectedIndex: 0,
     };
   }
 
@@ -55,7 +56,11 @@ class BuyandSell extends React.Component {
   }
 
   onChange = (e) => {
-    if(e.nativeEvent.value == this.state.values[1]){
+    this.setState({selectedIndex: e.nativeEvent.selectedSegmentIndex})
+  }
+
+  onValueChange = (value) => {
+    if(value == this.state.values[1]){
       this.setState({transType: TransType.SELL})
     }else{
       this.setState({transType: TransType.BUY})
@@ -228,7 +233,9 @@ class BuyandSell extends React.Component {
     return actions;
   }
 
-  
+  onQuantityRex = () => {
+    this.setState({quantity_rex: this.props.myRexInfo.total_rex})
+  }
 
   getRexTransActions = () => {
     let actions = this.state.actionsList[this.state.transType].actions();
@@ -285,7 +292,7 @@ class BuyandSell extends React.Component {
       <div style={styles.centerDiv}>
         <div style={styles.centertopout}>
           <div style={{flex: 1,}}/>
-          <SegmentedControl values={this.state.values} onChange={this.onChange} style={{flex: 2, height: Auto.WHT(62),}}/>
+          <SegmentedControl values={this.state.values} selectedIndex={this.state.selectedIndex} onChange={this.onChange} style={{flex: 2, height: Auto.WHT(62),}} onValueChange={this.onValueChange}/>
           <Button type="ghost" onClick={this.onBuySellList.bind(this)} style={styles.sellbtn} activeStyle={{opacity: '0.5'}} >{ (this.state.transType == TransType.BUY) ? "出售列表" : "买卖列表"}</Button>
         </div>
         {this.state.transType == TransType.BUY ?
@@ -293,27 +300,29 @@ class BuyandSell extends React.Component {
           <div style={styles.listitemout}>
             {this.state.isSwitch ?
             <p style={styles.centertoptext}>我的余额：{this.props.eosBalance} EOS</p>
-            // <InputItem  editable={true} defaultValue="0 EOS" placeholder="please input content" data-seed="logId">我的余额：{this.props.eosBalance} EOS</InputItem>
             :
-            // <InputItem  defaultValue="0 EOS" placeholder="please input content" data-seed="logId">抵押资源：</InputItem>
             <p style={styles.centertoptext}>抵押资源：{this.props.delegated_eosBalance} EOS</p>
             }
             <Button type="ghost" onClick={_el => this.setState({isSwitch: !this.state.isSwitch})} style={styles.listbtn} activeStyle={{opacity: '0.5'}}>切换</Button>
           </div>
+          <div style={{height: '1px', background:"#DDDDDD", boxSizing: 'border-box',  marginLeft: Auto.WHT(30), marginRight: Auto.WHT(30), }}/>
           <div style={styles.listitemout}>
-            <InputItem  type="text" pattern="[0-9]."  value={this.state.quantity} placeholder="请输入EOS数量" ref={el => this.autoFocusInst = el}  onChange={(quantity) => this.setState({ quantity: Utils.chkEosQuantity(quantity)})} >购买数量：</InputItem>
+            <InputItem  type="text" pattern="[0-9]."  value={this.state.quantity} placeholder="请输入EOS数量"  onChange={(quantity) => this.setState({ quantity: Utils.chkEosQuantity(quantity)})} >购买数量：</InputItem>
             <Button type="ghost" onClick={()=>{this.setState({quantity: this.state.isSwitch ? this.props.eosBalance :this.props.delegated_eosBalance});}}  style={styles.listbtn} activeStyle={{opacity: '0.5'}}>全部</Button>
           </div>
+          <div style={{height: '1px', background:"#DDDDDD", boxSizing: 'border-box',  marginLeft: Auto.WHT(30), marginRight: Auto.WHT(30), }}/>
         </div>
         :
         <div style={{display: 'flex', flexDirection: 'column', }}>
-           <div style={styles.listitemout}>
-           <InputItem  type="text" pattern="[0-9]." value={this.state.quantity_rex} placeholder="请输入REX数量"  onChange={(quantity_rex) => this.setState({ quantity_rex: Utils.chkEosQuantity(quantity_rex)})}	>出售数量：</InputItem>
-           <Button type="ghost" onClick={()=>{this.setState({quantity_rex: this.props.myRexInfo.total_rex});}}  style={styles.listbtn} activeStyle={{opacity: '0.5'}}>全部</Button>
-          </div>
           <div style={styles.listitemout}>
-             <p style={styles.centertoptext}>可卖数量：{this.props.myRexInfo.total_rex} REX</p>
+           <InputItem  type="text" pattern="[0-9]." value={this.state.quantity_rex} placeholder="请输入REX数量"  onChange={(quantity_rex) => this.setState({ quantity_rex: Utils.chkEosQuantity(quantity_rex)})}	>出售数量：</InputItem>
+           <Button type="ghost" onClick={this.onQuantityRex.bind(this)}  style={styles.listbtn} activeStyle={{opacity: '0.5'}}>全部</Button>
           </div>
+          <div style={{height: '1px', background:"#DDDDDD", boxSizing: 'border-box',  marginLeft: Auto.WHT(30), marginRight: Auto.WHT(30), }}/>
+          <div style={styles.listitemout}>
+            <p style={styles.centertoptext}>可卖数量：{this.props.myRexInfo.total_rex} REX</p>
+          </div>
+          <div style={{height: '1px', background:"#DDDDDD", boxSizing: 'border-box',  marginLeft: Auto.WHT(30), marginRight: Auto.WHT(30), }}/>
          </div>
         }
       </div>
@@ -407,7 +416,7 @@ const styles = {
     background: '#FFFFFF',
   },
   centertopout:{
-    height: Auto.WHT(88), 
+    height: Auto.WHT(110), 
     display:"flex", 
     flexDirection: 'row', 
     alignItems: 'center', 
@@ -415,6 +424,7 @@ const styles = {
     borderBottom: '1px solid #DDDDDD',
   },
   centertoptext: {
+    flex: 1,
     color: '#000000', 
     fontSize: Auto.WHT(34), 
     lineHeight: Auto.WHT(42), 
@@ -456,6 +466,8 @@ const styles = {
     display: 'flex', 
     flexDirection: 'row', 
     alignItems: 'center', 
+    height:  Auto.WHT(88), 
+    paddingRight: Auto.WHT(30),
   },
   listbtn: {
     width: Auto.WHT(112), 
@@ -467,6 +479,7 @@ const styles = {
     borderRadius: Auto.WHT(6), 
     fontSize: Auto.WHT(26), 
     color: '#FFFFFF',
+     
   },
   ordertext: {
     color: '#000000', 

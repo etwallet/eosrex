@@ -67,29 +67,17 @@ class Withdraw extends React.Component {
     return (<div style={styles.rootDiv}>
       <div style={{background:'#FFFFFF', }}>
         <div style={styles.headtopout}>
-          <Button type="ghost"  style={styles.centertopbtn} onClick={_el => {}}
-            activeStyle={{opacity: '0.5'}} icon={<img src={'../img/eos_icon.png'}  style={styles.reportimg} />} />
-        </div>
-        <div style={styles.headbottomout}>
+          <img src={'../img/eos_icon.png'}  style={styles.reportimg} />
           <p style={styles.headbottomleft}>余额: {this.state.balance} EOS</p>
-        </div>
-        <div style={styles.centertopout}>
           <p style={styles.centertoptext}>收款账户：{ this.props.account}</p>
         </div>
-      </div>
-      <div style={styles.centerDiv}>
-        <div style={{display: 'flex', flexDirection: 'column', }}>
-          <div style={styles.listitemout}>
-            <InputItem  type="text" pattern="[0-9]."  value={this.state.quantity} placeholder="请输入提现数量" ref={el => this.autoFocusInst = el}  onChange={(quantity) => this.setState({ quantity: Utils.chkEosQuantity(quantity) })} >提现数量：</InputItem>
-          </div>
+        <div style={styles.listitemout}>
+          <InputItem  type="text" pattern="[0-9]."  value={this.state.quantity} placeholder="请输入提现数量" ref={el => this.autoFocusInst = el}  onChange={(quantity) => this.setState({ quantity: Utils.chkEosQuantity(quantity) })} >提现数量：</InputItem>
         </div>
       </div>
-
       <div style={styles.footDiv}>
-        <Button type="ghost" style={styles.footbtn} activeStyle={{opacity: '0.5'}}
-        onClick={this.sendWithdraw.bind(this)}>提现</Button>
+        <Button type="ghost" style={styles.footbtn} activeStyle={{opacity: '0.5'}} onClick={this.sendWithdraw.bind(this)}>提现</Button>
       </div>
-
     </div>)
   }
 } 
@@ -106,67 +94,39 @@ const styles = {
 
   headtopout: {
     display:"flex", 
-    flexDirection: 'row', 
+    flexDirection: 'column', 
     alignItems: 'center',
     justifyContent: 'center', 
-    height: Auto.WHT(188), 
-    // paddingLeft: Auto.WHT(30), 
-    // paddingRight: Auto.WHT(30), 
-  },
-  
-  headbottomout: {
-    display: 'flex', 
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    // padding: Auto.WHT(13),
-  },
-  headbottomleft: {
-    color: '#333333', 
-    fontSize: Auto.WHT(36), 
-    lineHeight: Auto.WHT(45), 
-    // paddingBottom: Auto.WHT(9),
+    paddingTop: Auto.WHT(61), 
+    paddingBottom: Auto.WHT(75), 
   },
 
-  centerDiv: {
-    display: 'flex', 
-    flexDirection: 'column',
-    background: '#FFFFFF',
-  },
-  centertopout:{
-    height: Auto.WHT(88), 
-    display:"flex", 
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    // borderBottom: '1px solid #DDDDDD',
+  headbottomleft: {
+    color: '#333333', 
+    fontSize: Auto.WHT(34), 
+    lineHeight: Auto.WHT(42), 
+    paddingTop: Auto.WHT(25), 
   },
   centertoptext: {
     color: '#888888', 
-    fontSize: Auto.WHT(34), 
-    lineHeight: Auto.WHT(42), 
-    // paddingLeft: Auto.WHT(30),  
-  },
-  centertopbtn: {
-    border: 'none', 
-    borderRadius: 0,
-    color: '#D9D9D9', 
-    padding: '0 0.4rem',
-    // height: Auto.WHT(36),
-    textDecoration: 'none', 
+    fontSize: Auto.WHT(30), 
+    lineHeight: Auto.WHT(34),
+    paddingTop:  Auto.WHT(18),
   },
   reportimg: {
-    width: Auto.WHT(30),
-    height: Auto.WHT(30),
+    width: Auto.WHT(120),
+    height: Auto.WHT(120),
     margin: 0,
   },
-  
   listitemout: {
     display: 'flex', 
     flexDirection: 'row', 
     alignItems: 'center', 
+    height: Auto.WHT(90), 
+    boxSizing: 'border-box', 
+    borderTop: '1px #DDDDDD solid', 
+    borderBottom: '1px #DDDDDD solid', 
   },
-
   footDiv: {
     width: ScreenWidth, 
     boxSizing: 'border-box', 
@@ -174,6 +134,7 @@ const styles = {
     paddingLeft: Auto.WHT(30), 
     paddingRight: Auto.WHT(30), 
     paddingBottom: Auto.WHT(40),
+    
   },
   footbtn: {
     width: '100%', 
@@ -186,6 +147,4 @@ const styles = {
     lineHeight: Auto.WHT(94), 
     borderRadius: Auto.WHT(10),
   },
-  
-
 }
