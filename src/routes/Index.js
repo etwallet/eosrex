@@ -303,7 +303,7 @@ const styles = {
   },
   centertoptitle: {
     color: '#000000', 
-    fontSize: Auto.WHT(35), 
+    fontSize: Auto.WHT(30), 
     lineHeight: Auto.WHT(84), 
     paddingLeft: Auto.WHT(30),
   },
