@@ -10,6 +10,7 @@ export default {
     account: '',
     permission: 'active',
     eosBalance: '0.0000',
+    delegated_eosBalance: '0.0000',
     network: {
       blockchain:'eos',
       protocol:'http',
@@ -63,9 +64,25 @@ export default {
         var eos = window.scatter.eos(network, window.Eos);
         
         let eosBalance = '0.0000';
+        let delegated_eosBalance = '0.0000';
         let accountInfo = yield eos.getAccount(payload.account);
-        if(accountInfo && accountInfo.core_liquid_balance){
-          eosBalance = accountInfo.core_liquid_balance.replace("EOS", "").replace(" ", "");
+        if(accountInfo){
+          if(accountInfo.core_liquid_balance){
+            eosBalance = accountInfo.core_liquid_balance.replace("EOS", "").replace(" ", "");
+          }
+          if(accountInfo.total_resources){
+            let cpu_weight = '0.0000';
+            let net_weight = '0.0000';
+            if(accountInfo.total_resources.cpu_weight)
+            {
+              cpu_weight = accountInfo.total_resources.cpu_weight.replace("EOS", "").replace(" ", "");
+            }
+            if(accountInfo.total_resources.net_weight)
+            {
+              net_weight = accountInfo.total_resources.net_weight.replace("EOS", "").replace(" ", "");
+            }
+            delegated_eosBalance = (parseFloat(cpu_weight) + parseFloat(net_weight)).toFixed(4);
+          }
         }
 
         let isVoted = false; // 是否已经投票过
@@ -76,8 +93,7 @@ export default {
             isVoted = true;
           }
         }
-
-        yield put({ type: 'update', payload: {myVotes: myVotes, isVoted: isVoted, eosBalance: eosBalance}});
+        yield put({ type: 'update', payload: {myVotes: myVotes, isVoted: isVoted, eosBalance: eosBalance,delegated_eosBalance:delegated_eosBalance}});
 
       } catch (error) {
         console.log("+++++app/models/commonModel.js++++getAccountInfo-error:",JSON.stringify(error));
@@ -158,6 +174,32 @@ export default {
         if(callback) callback(resp);
       } catch (error) {
         console.log("+++++app/models/common.js++++querySellRexInfo-error:",JSON.stringify(error));
+        if(callback) callback(null);
+      }
+    },
+    //查询可提币余额
+    *queryWithdrawInfo({ payload, callback }, { select,  call, put }) {
+      try {
+        if(!payload.account){
+          if(callback) callback(null);
+          return;
+        }
+        
+        let network = yield select(state => state.common.network);  
+        var eos = window.scatter.eos(network, window.Eos);
+        var obj = new Object();
+        obj.json = true;
+        obj.code = 'eosio';
+        obj.scope = 'eosio';
+        obj.table = 'rexfund';
+        obj.limit = 1;
+        obj.lower_bound = payload.account;
+        // obj.table_key = 'owner';
+        let resp = yield eos.getTableRows(obj);
+
+        if(callback) callback(resp);
+      } catch (error) {
+        console.log("+++++app/models/common.js++++queryWithdrawInfo-error:",JSON.stringify(error));
         if(callback) callback(null);
       }
     },

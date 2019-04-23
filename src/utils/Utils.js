@@ -51,4 +51,35 @@ export default class  Utils {
         return '0.0000';
       }
     }
+
+    static chkEosQuantity(obj) {
+      obj = obj.replace(/[^\d.]/g, "");  //清除 "数字"和 "."以外的字符
+      obj = obj.replace(/^\./g, "");  //验证第一个字符是否为数字
+      obj = obj.replace(/\.{2,}/g, "."); //只保留第一个小数点，清除多余的
+      obj = obj
+        .replace(".", "$#$")
+        .replace(/\./g, "")
+        .replace("$#$", ".");
+      obj = obj.replace(/^(\-)*(\d+)\.(\d\d\d\d).*$/,'$1$2.$3'); //只能输入四个小数
+      // var max = 9999999999.9999;  // 100亿 -1
+      // var min = 0.0000;
+      // var value = 0.0000;
+      // var floatbalance;
+      // try {
+      //   value = parseFloat(obj);
+      //   floatbalance = parseFloat(this.state.balance);
+      // } catch (error) {
+      //   value = 0.0000;
+      //   floatbalance = 0.0000;
+      // }
+      // if(value < min|| value > max){
+      //   EasyToast.show(Translate.getT("输入错误"));
+      //   obj = "";
+      // }
+      // if (value > floatbalance) {
+      //     EasyToast.show(Translate.getT('账户余额不足,请重输'));
+      //     obj = "";
+      // }
+      return obj;
+  }
 }
