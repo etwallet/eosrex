@@ -96,8 +96,9 @@ class BuyandSell extends React.Component {
     }
     this.setState({exchangeradio:val_price});
   }
-  withdraw = async () => {
-    var tmp_amount = 0.0000;
+  //查询冻结的 EOS
+  queryWithdrawAmount = async () => {
+    let tmp_amount = 0.0000;
     let resp = await Utils.dispatchActiionData(this, { type: 'common/queryWithdrawInfo', payload:{account: this.props.account}});
     if(resp && resp.rows){
       resp.rows.forEach(function(val,index){
@@ -114,14 +115,47 @@ class BuyandSell extends React.Component {
           }
       });
     }
+    console.log('resp tmp_amount',tmp_amount);
+    return tmp_amount;
+  }
+  withdraw = async () => {
+    let tmp_amount = await this.queryWithdrawAmount();
     if(tmp_amount < 0.0001){
       Toast.info("没有冻结的币,无需提币");
       return ;
     }
     this.props.dispatch(routerRedux.push({pathname: '/Withdraw', query: {balance: tmp_amount}}))
   }
+  auto_sendWithdraw = async (amount) => {
+    try {
+      let actions = [{
+        account: 'eosio',
+        name: 'withdraw',
+        authorization: [{
+          actor: this.props.account,
+          permission: this.props.permission,
+        }],
+        data: {
+          owner: this.props.account,
+          amount: formatEosQua(amount + ' EOS'), 
+        },
+      }];
+       console.log('actions=',JSON.stringify(actions));
+       let resp = await Utils.dispatchActiionData(this, { type: 'common/sendEosAction', payload:{actions: actions}});
+       console.log('resp =',JSON.stringify(resp));
+       if(resp){
+         Utils.dispatchActiionData(this, { type: 'common/getAccountInfo', payload:{account: this.props.account}});
+        Toast.info("交易成功");
+       }else{
+        Toast.info("提币失败");
+       }
+    } catch (error) {
+      console.log('err=',JSON.stringify(error));
+    }
+  }
 
-  doTrans = (transType) => {
+
+  doTrans = async (transType) => {
     try {
       let quantity;
       let banlance;
@@ -144,10 +178,28 @@ class BuyandSell extends React.Component {
         Toast.info('余额不足');
         return ;
       }
- 
+     
       if(this.props.isVoted){ // 投过票了
         let rexTransActions = this.getRexTransActions();
-        this.doEosTransact(rexTransActions);
+        let resp = await this.doEosTransact(rexTransActions);
+        if(resp){
+          console.log('doEosTransact+++++');
+          // if(this.state.transType == TransType.SELL){
+            //卖了REX，自动发起提币
+            //  setTimeout(async () => {
+            //   let tmp_amount = await this.queryWithdrawAmount();
+            //   console.log('tmp_amount 11',tmp_amount);
+            //   if(tmp_amount >= 0.0001){
+            //     console.log('tmp_amount 22');
+            //     // resp = await this.auto_sendWithdraw('' + tmp_amount);
+            //     resp = await this.auto_sendWithdraw('0.1000');
+            //   }
+            // }, 1000);
+          // }
+          Toast.info('出售成功,请提币至当前账户');
+        }else{
+          Toast.info('交易失败');
+        }
         return;
       }
 
@@ -225,7 +277,7 @@ class BuyandSell extends React.Component {
         }],
         data: {
           from: this.props.account,
-          rex: formatEosQua(this.state.quantity + ' REX'),
+          rex: formatEosQua(this.state.quantity_rex + ' REX'),
         },
       },
     ]
@@ -250,7 +302,8 @@ class BuyandSell extends React.Component {
   }
 
   async doEosTransact(actions){
-    Utils.dispatchActiionData(this, { type: 'common/sendEosAction', payload:{actions: actions}});
+    let resp = await Utils.dispatchActiionData(this, { type: 'common/sendEosAction', payload:{actions: actions}});
+    return resp;
   }
   
   render() {

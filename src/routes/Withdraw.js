@@ -50,10 +50,14 @@ class Withdraw extends React.Component {
           amount: formatEosQua(this.state.quantity + ' EOS'), 
         },
       }];
+      console.log('sendWithdraw actions=',JSON.stringify(actions));
        let resp = await Utils.dispatchActiionData(this, { type: 'common/sendEosAction', payload:{actions: actions}});
-    //    alert("resp="+JSON.stringify(resp));
+       console.log('sendWithdraw resp=',JSON.stringify(resp));
        if(resp){
+         //更新EOS 余额
+        Utils.dispatchActiionData(this, { type: 'common/getAccountInfo', payload:{account: this.props.account}});
         Toast.info("成功");
+        window.history.go(-1);
        }else{
         Toast.info("失败");
        }

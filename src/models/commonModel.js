@@ -16,7 +16,7 @@ export default {
       protocol:'http',
       host:'192.168.1.37',  
       port:8000,
-      chainId:'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906'
+      chainId:'1c6ae7719a2a3b4ecb19584a30ff510ba1b6ded86e1fd8b8fc22f1179c622a32'
     },
     rexpool:{
       total_lent: '0.0000 EOS', // 已出租的EOS总量
