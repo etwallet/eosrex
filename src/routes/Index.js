@@ -175,7 +175,7 @@ class Index extends React.Component {
           <p style={styles.centertoptitle}>租用资源</p>
           <p style={styles.centertoptext}>我的余额：{this.props.eosBalance} EOS</p>
         </div>
-        <p style={styles.centertoptitle}>付款账户：{this.props.account}</p>
+        <p style={styles.centertoptitle}>{'付款账户：  ' + this.props.account}</p>
         <InputItem   
           value={this.state.toAccount}
           onChange={(toAccount) => this.setState({ toAccount })}
