@@ -101,7 +101,7 @@ class Index extends React.Component {
   }
 
   description = () => {
-    this.props.dispatch(routerRedux.push({pathname: '/GameDescription', query: {   }}))
+    this.props.dispatch(routerRedux.push({pathname: '/GameDescription', query: {lease:true}}))
   }
  
   doRent = () => {

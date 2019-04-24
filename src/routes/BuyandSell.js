@@ -52,7 +52,7 @@ class BuyandSell extends React.Component {
   }
 
   description = () => {
-    this.props.dispatch(routerRedux.push({pathname: '/GameDescription', query: {   }}))
+    this.props.dispatch(routerRedux.push({pathname: '/GameDescription', query: {lease:false}}))
   }
 
   onChange = (e) => {
