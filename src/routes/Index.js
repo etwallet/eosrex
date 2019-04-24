@@ -104,7 +104,7 @@ class Index extends React.Component {
     this.props.dispatch(routerRedux.push({pathname: '/GameDescription', query: {lease:true}}))
   }
  
-  doRent = () => {
+  doRent = async () => {
     if(!this.props.account){
       Toast.info("请先登录", 1);
       return;
@@ -146,7 +146,12 @@ class Index extends React.Component {
           },
         }
       ];
-      Utils.dispatchActiionData(this, { type: 'common/sendEosAction', payload:{actions: actions}});
+      let resp = await Utils.dispatchActiionData(this, { type: 'common/sendEosAction', payload:{actions: actions}});
+      if(resp){
+        Toast.info('交易成功');
+      }else{
+        Toast.info('交易失败');
+      }
     } catch (error) {
       
     }
