@@ -372,8 +372,8 @@ class BuyandSell extends React.Component {
            <Button type="ghost" onClick={this.onQuantityRex.bind(this)}  style={styles.listbtn} activeStyle={{opacity: '0.5'}}>全部</Button>
           </div>
           <div style={{height: '1px', background:"#DDDDDD", boxSizing: 'border-box',  marginLeft: Auto.WHT(30), marginRight: Auto.WHT(30), }}/>
-          <div style={styles.listitemout}>
-            <p style={styles.centertoptext}>可卖数量：{this.props.myRexInfo.total_rex} REX</p>
+          <div style={styles.listitemout11}>
+            <p style={styles.centertoptext11}>可卖数量：{this.props.myRexInfo.total_rex} REX</p>
           </div>
           <div style={{height: '1px', background:"#DDDDDD", boxSizing: 'border-box',  marginLeft: Auto.WHT(30), marginRight: Auto.WHT(30), }}/>
          </div>
@@ -584,6 +584,23 @@ const styles = {
     fontSize: Auto.WHT(36), 
     lineHeight: Auto.WHT(94), 
     borderRadius: Auto.WHT(10),
+  },
+
+  listitemout11: {
+    display: 'flex', 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    justifyContent: 'center',
+    height:  Auto.WHT(88), 
+    // paddingRight: Auto.WHT(30),
+  },
+  centertoptext11: {
+    flex: 1,
+    textAlign: 'center',
+    color: '#888888', 
+    fontSize: Auto.WHT(26), 
+    lineHeight: Auto.WHT(37), 
+    // paddingLeft: Auto.WHT(30),  
   },
 
 }
