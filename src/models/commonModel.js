@@ -14,8 +14,8 @@ export default {
     network: {
       blockchain:'eos',
       protocol:'http',
-      host:'192.168.1.37',  
-      port:8000,
+      // host:'192.168.1.37',  
+      // port:8000,
       chainId:'1c6ae7719a2a3b4ecb19584a30ff510ba1b6ded86e1fd8b8fc22f1179c622a32'
     },
     rexpool:{
