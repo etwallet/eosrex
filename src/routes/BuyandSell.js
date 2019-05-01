@@ -255,7 +255,7 @@ class BuyandSell extends React.Component {
           permission: 'active',
         }],
         data: {
-          owner: this.props.account,
+          from: this.props.account,
           amount: formatEosQua(this.state.quantity + ' EOS'),
         },
       }
