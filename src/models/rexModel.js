@@ -7,7 +7,7 @@ export default {
   namespace: 'rex',
 
   state: {
-    myRexInfo:[],
+    myRexInfo:{total_rex: 0},
 
   },
 
@@ -28,21 +28,15 @@ export default {
         obj.limit = 1;
         obj.lower_bound = payload.account;
         let info = yield eos.getTableRows(obj);
-
-        let rexInfo = info.rows;
-        let myTotalRex = 0;
-        rexInfo.forEach(item => {
-          let v = 0;
-          try {
-            let s = Utils.sliceUnit(item.rex_balance);
-            v = parseFloat(s);
-          } catch (error) {
-            v = 0;
-          }
-          myTotalRex += v;
-        });
-
-        rexInfo.total_rex = myTotalRex;
+        
+        let rexInfo = info.rows[0];
+        if(rexInfo && rexInfo.owner != payload.account){
+          return;
+        }
+        rexInfo.total_rex = 0;
+        if(rexInfo.rex_balance){
+          rexInfo.total_rex = rexInfo.rex_balance;
+        }
         yield put({ type: 'update', payload: {myRexInfo: rexInfo} });
       } catch (error) {
         console.log("+++++app/models/rexModel.js++++getMyRexInfo-error:",JSON.stringify(error));

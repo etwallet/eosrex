@@ -36,14 +36,18 @@ class NodeVoting extends Component{
     }
 
     async getVoteInfo(){
-        let producers = await Utils.dispatchActiionData(this, { type: 'vote/listProducers', payload:{}});
-        let selected = 0;
-        producers.forEach((item) => {
-            if(item.isSelect){
-                selected++;  
-            }
-        })
-        this.setState({producers: producers, selected: selected});
+        try {
+            let producers = await Utils.dispatchActiionData(this, { type: 'vote/listProducers', payload:{}});
+            let selected = 0;
+            producers.forEach((item) => {
+                if(item.isSelect){
+                    selected++;  
+                }
+            })
+            this.setState({producers: producers, selected: selected});
+        } catch (error) {
+            
+        }
     }
 
     getVoteActions = () => {
@@ -75,7 +79,7 @@ class NodeVoting extends Component{
     async doVote (){
         let actions = this.getVoteActions();
         let resp = await Utils.dispatchActiionData(this, { type: 'common/sendEosAction', payload:{actions: actions}});
-        if(resp.transaction_id){
+        if(resp && resp.transaction_id){
             Toast.info("投票成功");
             return;
         }
