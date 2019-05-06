@@ -119,6 +119,18 @@ class Index extends React.Component {
       let actions = [
         {
           account: 'eosio',
+          name: 'deposit',
+          authorization: [{
+            actor: this.props.account,
+            permission: this.props.permission,
+          }],
+          data: {
+            owner: this.props.account,
+            amount: formatEosQua( (this.state.cpuval + this.state.netval).toFixed(4) + ' EOS'),
+          },
+        },
+        {
+          account: 'eosio',
           name: 'rentcpu',
           authorization: [{
             actor: this.props.account,
