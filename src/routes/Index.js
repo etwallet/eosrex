@@ -31,9 +31,9 @@ class Index extends React.Component {
       this.login();
     });
 
-    // setTimeout(()=>{
-    //   this.login();
-    // }, 10);
+    setTimeout(()=>{
+      this.login();
+    }, 10);
   }
 
   async login() {
