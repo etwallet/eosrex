@@ -217,7 +217,7 @@ class BuyandSell extends React.Component {
             //   }
             // }, 1000);
           // }
-          Toast.info('出售成功,请提币至当前账户');
+          Toast.info('交易成功');
         }else{
           Toast.info('交易失败');
         }
