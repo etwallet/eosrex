@@ -273,7 +273,7 @@ class BuyandSell extends React.Component {
         name: 'buyrex',
         authorization: [{
           actor: this.props.account,
-          permission: 'active',
+          permission: this.props.permission,
         }],
         data: {
           from: this.props.account,
