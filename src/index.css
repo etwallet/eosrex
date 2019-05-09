@@ -85,6 +85,10 @@ body :global(.am-image-picker-list .am-image-picker-item .am-image-picker-item-r
 }
 
 
+body :global(.am-list-item .am-list-line .am-list-content) {
+  display: flex;
+  flex-direction: row
+}
 
 /* 长输入框 */
 body :global(.am-textarea-has-count) {

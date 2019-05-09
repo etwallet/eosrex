@@ -35,6 +35,8 @@ export default function RouterConfig({history,app}) {
   const DetailsList = Dynamic({app,models:()=>[require("./models/")],component:()=>import('./routes/DetailsList')});
   const Withdraw = Dynamic({app,models:()=>[require("./models/")],component:()=>import('./routes/Withdraw')});
   const NodeVoting = Dynamic({app,models:()=>[require("./models/")],component:()=>import('./routes/NodeVoting')});
+  const MyRexDetails = Dynamic({app,models:()=>[require("./models/")],component:()=>import('./routes/MyRexDetails')});
+
   return (
     <LocaleProvider locale={appLocale.antd}>
       <IntlProvider locale={appLocale.locale} messages={appLocale.messages}>
@@ -46,6 +48,7 @@ export default function RouterConfig({history,app}) {
             <Route path="/DetailsList" exact component={DetailsList} />
             <Route path="/Withdraw" exact component={Withdraw} />
             <Route path="/NodeVoting" exact component={NodeVoting} />
+            <Route path="/MyRexDetails" exact component={MyRexDetails} />
           </Switch>
         </Router>
       </IntlProvider>

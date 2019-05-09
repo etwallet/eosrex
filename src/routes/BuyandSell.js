@@ -367,6 +367,16 @@ class BuyandSell extends React.Component {
     return resp;
   }
   
+  showMyRexDetails = () => {
+    if(!this.props.myRexInfo.rex_maturities || this.props.myRexInfo.rex_maturities.length == 0){
+      Modal.alert('温馨提示', <div>您没有冻结的REX</div>, [
+        { text: '关闭', onPress: () => {}},
+      ]);
+      return;
+    }
+    this.props.dispatch(routerRedux.push({pathname: '/MyRexDetails', query: { }}))
+  }
+
   render() {
     return (<div style={styles.rootDiv}>
       <div style={{background:'#FFFFFF', }}>
@@ -395,9 +405,10 @@ class BuyandSell extends React.Component {
           <span style={styles.centerbottom}>兑换比例：</span>
           <span style={styles.centerbottom}>1 EOS ≈ {this.state.exchangeradio} REX</span>
           </List.Item>
-          <List.Item wrap >
+          <List.Item wrap style={{display: 'flex', flexDirection: 'row', }}>
           <span style={styles.centerbottom}>我的REX：</span>
-          <span style={styles.centerbottom}>{this.props.myRexInfo.total_rex} REX</span>
+          <span style={styles.centerbottom1}>{this.props.myRexInfo.total_rex} REX</span>
+          <span onClick={this.showMyRexDetails.bind(this)} style={styles.rexDetail}>详情</span>
           </List.Item>
         </List>
       </div>
@@ -590,7 +601,17 @@ const styles = {
     color: '#888888', 
     fontSize: Auto.WHT(28),
   },
+  centerbottom1: {
+    display: 'flex',
+    flex: 1,
+    color: '#888888', 
+    fontSize: Auto.WHT(28),
+  },
+  rexDetail: {
 
+    color: '#108EE9', 
+    fontSize: Auto.WHT(28),
+  },
   listDiv: {
     display: 'flex', 
     flexDirection: 'column',
