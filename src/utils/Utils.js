@@ -82,4 +82,15 @@ export default class  Utils {
       // }
       return obj;
   }
+
+  static async isTimeExpire(tUs){
+    var myDate = new Date();
+    var now = myDate.valueOf();
+    var time = new Date(tUs).valueOf();
+    if(now <= time){
+      return true;
+    }else{
+      return false;
+    }
+  }
 }

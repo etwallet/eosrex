@@ -47,6 +47,9 @@ export default {
         if(rexInfo.rex_maturities){
           rexInfo.rex_maturities.forEach(item => {
             try {
+              if(Utils.isTimeExpire(new Date(item.first).valueOf())){
+                return;
+              }
               rexInfo.sell_available_rex = (parseFloat(rexInfo.sell_available_rex) - (item.second/10000).toFixed(4)).toFixed(4);
             } catch (error) {
               
