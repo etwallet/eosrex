@@ -21,7 +21,7 @@ class MyRexDetails extends Component{
         }
     }
     componentWillMount(){
-        alert(JSON.stringify(this.props.myRexInfo.rex_maturities))
+        
     }
     componentDidMount() {
        
