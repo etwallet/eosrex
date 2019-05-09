@@ -7,7 +7,10 @@ export default {
   namespace: 'rex',
 
   state: {
-    myRexInfo:{total_rex: 0},
+    myRexInfo:{
+      total_rex: 0, // 总rex
+      sell_available_rex: 0, // 可卖的rex
+    },
 
   },
 
@@ -33,10 +36,24 @@ export default {
         if(rexInfo && rexInfo.owner != payload.account){
           return;
         }
+
+        rexInfo.sell_available_rex = 0;
         rexInfo.total_rex = 0;
         if(rexInfo.rex_balance){
-          rexInfo.total_rex = rexInfo.rex_balance;
+          rexInfo.total_rex = Utils.sliceUnit(rexInfo.rex_balance);
+          rexInfo.sell_available_rex = rexInfo.total_rex;
         }
+
+        if(rexInfo.rex_maturities){
+          rexInfo.rex_maturities.forEach(item => {
+            try {
+              rexInfo.sell_available_rex = (parseFloat(rexInfo.sell_available_rex) - (item.second/10000).toFixed(4)).toFixed(4);
+            } catch (error) {
+              
+            }
+          });
+        }
+
         yield put({ type: 'update', payload: {myRexInfo: rexInfo} });
       } catch (error) {
         console.log("+++++app/models/rexModel.js++++getMyRexInfo-error:",JSON.stringify(error));

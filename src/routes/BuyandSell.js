@@ -25,6 +25,8 @@ class BuyandSell extends React.Component {
       dataSource,
       isSwitch: true,
       values: ['购买', '出售'],
+      netQuantity: '0.0000',
+      cpuQuantity: '0.0000',
       quantity: '0.0000',
       quantity_rex: '0.0000',
       transType: TransType.BUY,
@@ -182,11 +184,21 @@ class BuyandSell extends React.Component {
       let banlance;
       if(transType == TransType.BUY){
         quantity = parseFloat(this.state.quantity);
+        let cpuQuantity = parseFloat(this.state.cpuQuantity);
+        let netQuantity = parseFloat(this.state.netQuantity);
         banlance = parseFloat(this.state.isSwitch ? this.props.eosBalance :this.props.delegated_eosBalance);
-        if(quantity < 0.0001){
-          Toast.info('购买数量错误');
-          return ;
+        if(this.state.isSwitch){
+          if(quantity < 0.0001){
+            Toast.info('购买数量错误');
+            return ;
+          }
+        }else{
+          if(cpuQuantity < 0.0001 && netQuantity < 0.0001){
+            Toast.info('购买数量错误');
+            return ;
+          }
         }
+
       }else{
         quantity = parseFloat(this.state.quantity_rex);
         banlance = parseFloat(this.props.myRexInfo.total_rex);
@@ -252,37 +264,65 @@ class BuyandSell extends React.Component {
     return actions;
   }
 
+  // 使用抵押资源购买rex
+  getBuyByStakeActions(){
+    let actions = [{
+      account: 'eosio',
+      name: 'unstaketorex',
+      authorization: [{
+        actor: this.props.account,
+        permission: this.props.permission,
+      }],
+      data: {
+        owner: this.props.account,
+        receiver: this.props.account,
+	      from_net: formatEosQua(this.state.netQuantity + ' EOS'),
+	      from_cpu: formatEosQua(this.state.cpuQuantity + ' EOS'),
+      },
+    }];
+
+    return actions;
+  }
+
+  // 使用余额购买rex
+  getBuyByBalanceActions(){
+    let actions = [{
+      account: 'eosio',
+      name: 'deposit',
+      authorization: [{
+        actor: this.props.account,
+        permission: this.props.permission,
+      }],
+      data: {
+        owner: this.props.account,
+        amount: formatEosQua(this.state.quantity + ' EOS'),
+      },
+    },
+    {
+      account: 'eosio',
+      name: 'buyrex',
+      authorization: [{
+        actor: this.props.account,
+        permission: this.props.permission,
+      }],
+      data: {
+        from: this.props.account,
+        amount: formatEosQua(this.state.quantity + ' EOS'),
+      },
+    }];
+
+    return actions;
+  }
+
   /**
    * 买rex
    */
   getBuyActions = () => {
-    let actions = [{
-        account: 'eosio',
-        name: 'deposit',
-        authorization: [{
-          actor: this.props.account,
-          permission: this.props.permission,
-        }],
-        data: {
-          owner: this.props.account,
-          amount: formatEosQua(this.state.quantity + ' EOS'),
-        },
-      },
-      {
-        account: 'eosio',
-        name: 'buyrex',
-        authorization: [{
-          actor: this.props.account,
-          permission: this.props.permission,
-        }],
-        data: {
-          from: this.props.account,
-          amount: formatEosQua(this.state.quantity + ' EOS'),
-        },
-      }
-    ]
+    if(this.state.isSwitch){ // 使用余额购买rex
+      return this.getBuyByBalanceActions();
+    }
 
-    return actions;
+    return this.getBuyByStakeActions();
   }
 
   /**
@@ -307,7 +347,7 @@ class BuyandSell extends React.Component {
   }
 
   onQuantityRex = () => {
-    this.setState({quantity_rex: this.props.myRexInfo.total_rex})
+    this.setState({quantity_rex: this.props.myRexInfo.sell_available_rex})
   }
 
   getRexTransActions = () => {
@@ -375,15 +415,37 @@ class BuyandSell extends React.Component {
             {this.state.isSwitch ?
             <p style={styles.centertoptext}>我的余额：{this.props.eosBalance} EOS</p>
             :
-            <p style={styles.centertoptext}>抵押资源：{this.props.delegated_eosBalance} EOS</p>
+            <div style={{display: 'flex', flex: 1, flexDirection: 'column', }}>
+              <p style={styles.centertoptext}>抵押资源：{this.props.delegated_eosBalance} EOS</p>
+              <p style={styles.graytext}>{'(net：' + this.props.netDelegated + '  cpu：' + this.props.cpuDelegated + ')'}</p>
+            </div>
             }
             <Button type="ghost" onClick={_el => this.setState({isSwitch: !this.state.isSwitch})} style={styles.listbtn} activeStyle={{opacity: '0.5'}}>切换</Button>
           </div>
-          <div style={{height: '1px', background:"#DDDDDD", boxSizing: 'border-box',  marginLeft: Auto.WHT(30), marginRight: Auto.WHT(30), }}/>
-          <div style={styles.listitemout}>
-            <InputItem  type="text" pattern="[0-9]."  value={this.state.quantity} placeholder="请输入EOS数量"  onChange={(quantity) => this.setState({ quantity: Utils.chkEosQuantity(quantity)})} >购买数量：</InputItem>
-            <Button type="ghost" onClick={()=>{this.setState({quantity: this.state.isSwitch ? this.props.eosBalance :this.props.delegated_eosBalance});}}  style={styles.listbtn} activeStyle={{opacity: '0.5'}}>全部</Button>
-          </div>
+          {this.state.isSwitch ?
+            <div >
+              <div style={{height: '1px', background:"#DDDDDD", boxSizing: 'border-box',  marginLeft: Auto.WHT(30), marginRight: Auto.WHT(30), }}/>
+              <div style={styles.listitemout}>
+                <InputItem  type="text" pattern="[0-9]."  value={this.state.quantity} placeholder="请输入EOS数量"  onChange={(quantity) => this.setState({ quantity: Utils.chkEosQuantity(quantity)})} >购买数量：</InputItem>
+                <Button type="ghost" onClick={()=>{this.setState({quantity: this.state.isSwitch ? this.props.eosBalance :this.props.delegated_eosBalance});}}  style={styles.listbtn} activeStyle={{opacity: '0.5'}}>全部</Button>
+              </div>
+            </div>
+            :
+            <div>
+              <div style={{height: '1px', background:"#DDDDDD", boxSizing: 'border-box',  marginLeft: Auto.WHT(30), marginRight: Auto.WHT(30), }}/>
+              <div style={styles.listitemout}>
+                <InputItem  type="text" pattern="[0-9]."  value={this.state.netQuantity} placeholder="请输入EOS数量"  onChange={(quantity) => this.setState({ netQuantity: Utils.chkEosQuantity(quantity)})} >使用net：</InputItem>
+                <Button type="ghost" onClick={()=>{this.setState({netQuantity: this.props.netDelegated});}}  style={styles.listbtn} activeStyle={{opacity: '0.5'}}>全部</Button>
+              </div>
+
+              <div style={{height: '1px', background:"#DDDDDD", boxSizing: 'border-box',  marginLeft: Auto.WHT(30), marginRight: Auto.WHT(30), }}/>
+              <div style={styles.listitemout}>
+                <InputItem  type="text" pattern="[0-9]."  value={this.state.cpuQuantity} placeholder="请输入EOS数量"  onChange={(quantity) => this.setState({ cpuQuantity: Utils.chkEosQuantity(quantity)})} >使用cpu：</InputItem>
+                <Button type="ghost" onClick={()=>{this.setState({cpuQuantity: this.props.cpuDelegated});}}  style={styles.listbtn} activeStyle={{opacity: '0.5'}}>全部</Button>
+              </div>
+            </div>
+          }
+
           <div style={{height: '1px', background:"#DDDDDD", boxSizing: 'border-box',  marginLeft: Auto.WHT(30), marginRight: Auto.WHT(30), }}/>
         </div>
         :
@@ -394,7 +456,7 @@ class BuyandSell extends React.Component {
           </div>
           <div style={{height: '1px', background:"#DDDDDD", boxSizing: 'border-box',  marginLeft: Auto.WHT(30), marginRight: Auto.WHT(30), }}/>
           <div style={styles.listitemout11}>
-            <p style={styles.centertoptext11}>可卖数量：{this.props.myRexInfo.total_rex} REX</p>
+            <p style={styles.centertoptext11}>可卖数量：{this.props.myRexInfo.sell_available_rex} REX</p>
           </div>
           <div style={{height: '1px', background:"#DDDDDD", boxSizing: 'border-box',  marginLeft: Auto.WHT(30), marginRight: Auto.WHT(30), }}/>
          </div>
@@ -404,7 +466,7 @@ class BuyandSell extends React.Component {
       {(this.state.transType == TransType.BUY) &&
       <div style={{padding: Auto.WHT(30), }}>
         <p style={styles.ordertext}>订单确认：</p>
-      <div style={styles.orderout}>花费{this.state.quantity} EOS，为您兑换{(parseFloat(this.state.quantity) * this.state.exchangeradio).toFixed(4)} REX</div>
+      <div style={styles.orderout}>花费{this.state.isSwitch ? this.state.quantity : parseFloat(this.state.netQuantity) + parseFloat(this.state.cpuQuantity)} EOS，为您兑换{((this.state.isSwitch ? parseFloat(this.state.quantity) : parseFloat(this.state.netQuantity) + parseFloat(this.state.cpuQuantity)) * this.state.exchangeradio).toFixed(4)} REX</div>
       </div>}
 
       <div style={styles.footDiv}>
@@ -504,6 +566,13 @@ const styles = {
     lineHeight: Auto.WHT(42), 
     paddingLeft: Auto.WHT(30),  
   },
+  graytext: {
+    flex: 1,
+    color: 'gray', 
+    fontSize: Auto.WHT(30), 
+    lineHeight: Auto.WHT(42), 
+    paddingLeft: Auto.WHT(30),  
+  },
   centertopbtn: {
     border: 'none', 
     borderRadius: 0,
@@ -540,7 +609,7 @@ const styles = {
     display: 'flex', 
     flexDirection: 'row', 
     alignItems: 'center', 
-    height:  Auto.WHT(88), 
+    height:  Auto.WHT(110), 
     paddingRight: Auto.WHT(30),
   },
   listbtn: {

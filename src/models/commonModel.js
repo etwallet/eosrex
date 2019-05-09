@@ -11,6 +11,8 @@ export default {
     permission: 'active',
     eosBalance: '0.0000',
     delegated_eosBalance: '0.0000',
+    cpuDelegated: '0.0000',
+    netDelegated: '0.0000',
     network: {
       blockchain:'eos',
       protocol:'http',
@@ -72,21 +74,22 @@ export default {
         
         let eosBalance = '0.0000';
         let delegated_eosBalance = '0.0000';
+        let cpu_weight = '0.0000';
+        let net_weight = '0.0000';
+
         let accountInfo = yield eos.getAccount(payload.account);
         if(accountInfo){
           if(accountInfo.core_liquid_balance){
             eosBalance = accountInfo.core_liquid_balance.replace("EOS", "").replace(" ", "");
           }
-          if(accountInfo.total_resources){
-            let cpu_weight = '0.0000';
-            let net_weight = '0.0000';
-            if(accountInfo.total_resources.cpu_weight)
+          if(accountInfo.self_delegated_bandwidth){
+            if(accountInfo.self_delegated_bandwidth.cpu_weight)
             {
-              cpu_weight = accountInfo.total_resources.cpu_weight.replace("EOS", "").replace(" ", "");
+              cpu_weight = accountInfo.self_delegated_bandwidth.cpu_weight.replace("EOS", "").replace(" ", "");
             }
-            if(accountInfo.total_resources.net_weight)
+            if(accountInfo.self_delegated_bandwidth.net_weight)
             {
-              net_weight = accountInfo.total_resources.net_weight.replace("EOS", "").replace(" ", "");
+              net_weight = accountInfo.self_delegated_bandwidth.net_weight.replace("EOS", "").replace(" ", "");
             }
             delegated_eosBalance = (parseFloat(cpu_weight) + parseFloat(net_weight)).toFixed(4);
           }
@@ -100,7 +103,7 @@ export default {
             isVoted = true;
           }
         }
-        yield put({ type: 'update', payload: {myVotes: myVotes, isVoted: isVoted, eosBalance: eosBalance,delegated_eosBalance:delegated_eosBalance}});
+        yield put({ type: 'update', payload: {myVotes: myVotes, isVoted: isVoted, eosBalance: eosBalance,delegated_eosBalance:delegated_eosBalance, cpuDelegated: cpu_weight, netDelegated: net_weight}});
 
       } catch (error) {
         console.log("+++++app/models/commonModel.js++++getAccountInfo-error:",JSON.stringify(error));
